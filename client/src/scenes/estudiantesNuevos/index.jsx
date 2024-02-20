@@ -209,12 +209,11 @@ const EstudiantesNuevos = () => {
 
   const handleChangeInstitucion = (event, newInstitucion) => {
     setInstitucion(newInstitucion);
-    const codigodesp = newInstitucion.split("-")[1];
-    //console.log(codigodesp);
+    const codigodesp = newInstitucion.split("-")[1];   
     const institucionEncontrada = institucionjson.find((institucion) => {
       return institucion.AMIE === codigodesp;
     });
-    console.log(institucionEncontrada);
+    
     setZona(institucionEncontrada.Zona);
     setRegimenEscolar(institucionEncontrada.Regimen_Escolar);
     setSostenimiento(institucionEncontrada.Sostenimiento);
@@ -308,8 +307,7 @@ const EstudiantesNuevos = () => {
       )?.codigo || null;
     const codigoZona =
       zonajson.find((zonas) => zonas.nombre === zona)?.codigo || null;
-    console.log(codigoZona);
-
+    
     const nuevoEstudiante = {
       nombre: nombre,
       apellido: apellido,
@@ -332,7 +330,7 @@ const EstudiantesNuevos = () => {
       umbralGeo: catGeo,
       abandono: abandono,
     };
-    console.log(nuevoEstudiante);
+    
     postEstudiante(nuevoEstudiante);
     setNombre("");
     setApellido("");
@@ -353,7 +351,7 @@ const EstudiantesNuevos = () => {
     setUmbralGeo("");
     setAbandono("");
     setGrado("");
-    setInstitucion("");
+    setInstitucion( provinciajson[0]?.["Nombre de Provincia"] || null);
   };
 
   /////////////////////////////////////////////////////////////////////////////////////////////
@@ -582,9 +580,8 @@ const EstudiantesNuevos = () => {
                 id="manageable-states-demo"
                 options={institucionFiltrada.map((option) => {
                   return `${option["Nombre_Institucion"]}-${option["AMIE"]}`;
-                })}
-                //institucionjson.map((option) => {return `${option["Nombre_Institucion"]}-${option["AMIE"]}`;})
-                //sx={{ width: 300 }}
+                })}       
+                
                 renderInput={(params) => (
                   <TextField {...params} label="Institucion" />
                 )}
