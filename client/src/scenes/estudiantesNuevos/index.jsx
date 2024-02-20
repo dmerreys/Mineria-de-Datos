@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import Header from "components/Header";
 import { useDispatch } from "react-redux";
-import { usePostLoginMutation, usePostSignUpMutation } from "state/api";
+import { usePostEstudianteMutation } from "state/api";
 import { setUserGlobal } from "state/index";
 import FlexBetween from "components/FlexBetween";
 import { useGetStudentQuery } from "state/api";
@@ -111,7 +111,7 @@ const columns = [
   },
 ];
 
-const Bayes = () => {
+const EstudiantesNuevos = () => {
   /////////////////////////////////////////////////////////////////////////////////////////////
   /* Constantes basicas */
 
@@ -119,7 +119,7 @@ const Bayes = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const { data, isLoading } = useGetStudentQuery();
-
+  const [postEstudiante] = usePostEstudianteMutation();
   /////////////////////////////////////////////////////////////////////////////////////////////
   /* seteos de datos de estudiantes */
 
@@ -134,6 +134,7 @@ const Bayes = () => {
   const [gradojson, setGradojson] = useState([]);
   const [zonajson, setZonajson] = useState([]);
   const [isecjson, setIsecjson] = useState([]);
+  const [sostenimientojson, setSostenimientojson] = useState([]);
   const [quintiljson, setQuintiljson] = useState([]);
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
@@ -157,7 +158,9 @@ const Bayes = () => {
   const [zona, setZona] = useState("");
   const [grado, setGrado] = useState("");
   const [umbralGeo, setUmbralGeo] = useState("");
+  const [catGeo, setCatGeo] = useState("");
   const [abandono, setAbandono] = useState("");
+  const [amie, setAmie] = useState("");
 
   /////////////////////////////////////////////////////////////////////////////////////////////
   /* Seteo de Inputs */
@@ -206,16 +209,17 @@ const Bayes = () => {
 
   const handleChangeInstitucion = (event, newInstitucion) => {
     setInstitucion(newInstitucion);
-    const codigodesp = newInstitucion.split("-")[1];   
-    console.log(codigodesp)
+    const codigodesp = newInstitucion.split("-")[1];
+    //console.log(codigodesp);
     const institucionEncontrada = institucionjson.find((institucion) => {
       return institucion.AMIE === codigodesp;
-    }); 
-    console.log(institucionEncontrada)
+    });
+    console.log(institucionEncontrada);
     setZona(institucionEncontrada.Zona);
     setRegimenEscolar(institucionEncontrada.Regimen_Escolar);
     setSostenimiento(institucionEncontrada.Sostenimiento);
     setUmbralGeo(institucionEncontrada.Categoria_Umbral);
+    setCatGeo(institucionEncontrada?.["Umbral_Por_Institucion"]);
   };
 
   const handleChangeProvincia = (event, newValue) => {
@@ -247,8 +251,8 @@ const Bayes = () => {
 
     const categoriaEncontrada = isecjson.find((categoria) => {
       return valorIsec >= categoria.min && valorIsec <= categoria.max;
-    });    
-    if (categoriaEncontrada) {      
+    });
+    if (categoriaEncontrada) {
       setCatIsec(categoriaEncontrada.nombre);
     } else {
       setCatIsec("");
@@ -280,28 +284,76 @@ const Bayes = () => {
   /////////////////////////////////////////////////////////////////////////////////////////////
   /* handleSubmit */
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    const codigoEtnia =
+      etniajson.find((etnias) => etnias.nombre === etnia)?.codigo || null;
+    const codigoGrado =
+      gradojson.find((grados) => grados.nombre === grado)?.codigo || null;
+    const codigoProvincia =
+      provinciajson.find(
+        (provincias) => provincias?.["Nombre de Provincia"] === provincia
+      )?.["Codigo de Provincia"] || null;
+    const codigoQuintil =
+      quintiljson.find((quintiles) => quintiles.nombre === quintil)?.codigo ||
+      null;
+    const codigoRegimenEscolar =
+      regimenjson.find((regimenes) => regimenes.nombre === regimenEscolar)
+        ?.codigo || null;
+    const codigoRegionNatural =
+      regionjson.find((regiones) => regiones.nombre === regionNatural)
+        ?.codigo || null;
+    const codigoSostenimiento =
+      sostenimientojson.find(
+        (sostenimientos) => sostenimientos.nombre === sostenimiento
+      )?.codigo || null;
+    const codigoZona =
+      zonajson.find((zonas) => zonas.nombre === zona)?.codigo || null;
+    console.log(codigoZona);
+
     const nuevoEstudiante = {
       nombre: nombre,
       apellido: apellido,
       cedula: cedula,
-      edad: edad,
+      edad: Number(parseInt(edad)),
       distrito: distrito,
       sexo: sexo,
-      etnia: etnia,
-      provincia: provincia,
+      etnia: codigoEtnia,
+      provincia: codigoProvincia.toString(),
       area: area,
-      regionNatural: regionNatural,
-      regimenEscolar: regimenEscolar,
-      sostenimiento: sostenimiento,
-      quintil: quintil,
-      isec: isec,
+      regionNatural: codigoRegionNatural,
+      regimenEscolar: codigoRegimenEscolar,
+      sostenimiento: codigoSostenimiento,
+      quintil: codigoQuintil,
+      isec: parseFloat(isec),
       catIsec: catIsec,
-      zona: zona,
-      grado: grado,
-      umbralGeo: umbralGeo,
+      zona: codigoZona,
+      grado: codigoGrado,
+      catGeo: umbralGeo,
+      umbralGeo: catGeo,
       abandono: abandono,
     };
+    console.log(nuevoEstudiante);
+    postEstudiante(nuevoEstudiante);
+    setNombre("");
+    setApellido("");
+    setCedula("");
+    setEdad("");
+    setDistrito("");
+    setSexo("");
+    setEtnia("");
+    setProvincia();
+    setArea("");
+    setRegionNatural("");
+    setRegimenEscolar("");
+    setSostenimiento("");
+    setQuintil("");
+    setIsec("");
+    setCatIsec("");
+    setZona("");
+    setUmbralGeo("");
+    setAbandono("");
+    setGrado("");
+    setInstitucion("");
   };
 
   /////////////////////////////////////////////////////////////////////////////////////////////
@@ -320,6 +372,7 @@ const Bayes = () => {
     setZonajson(zonaData);
     setQuintiljson(quintilData);
     setIsecjson(isecData);
+    setSostenimientojson(sostenimientoData);
   }, []);
 
   useEffect(() => {
@@ -346,7 +399,7 @@ const Bayes = () => {
     //Interfaz
     //Contenedor Principal
     <Box m="1.5rem 2.5rem">
-      <Header title="Bayes" subtitle="Datos Estudiantes" />
+      <Header title="Estudiantes Nuevos" subtitle="Datos Estudiantes" />
       <Box
         mt="20px"
         display="grid"
@@ -357,7 +410,7 @@ const Bayes = () => {
         backgroundColor={theme.palette.background.alt}
         sx={{
           "& > div": { gridColumn: isNonMediumScreens ? undefined : "span 12" },
-          "&": { gridAutoRows: "auto" }
+          "&": { gridAutoRows: "auto" },
         }}
       >
         <Box gridColumn="span 1" p="1.25rem 1rem">
@@ -390,6 +443,7 @@ const Bayes = () => {
               <TextField
                 label="Edad"
                 value={edad}
+                type="number"
                 onChange={handleChangeEdad}
                 fullWidth
               />
@@ -483,7 +537,7 @@ const Bayes = () => {
               <TextField
                 label="ISEC"
                 value={isec}
-                
+                type="number"
                 onChange={handleChangeIsec}
                 fullWidth
               />
@@ -491,7 +545,7 @@ const Bayes = () => {
             <Grid item xs={12} sm={6}>
               <TextField
                 label="Categoría ISEC"
-                value={catIsec}                              
+                value={catIsec}
                 disabled // Deshabilitar la edición del campo
                 fullWidth
               />
@@ -712,4 +766,4 @@ const Bayes = () => {
   );
 };
 
-export default Bayes;
+export default EstudiantesNuevos;

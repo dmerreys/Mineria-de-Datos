@@ -43,7 +43,7 @@ const navItems = [
     icon: null,
   },
   {
-    text: "Bayes",
+    text: "Estudiantes",
     icon: <ShoppingCartOutlined />,
   },
 ];
