@@ -44,6 +44,6 @@ mongoose
 
     /* ONLY ADD DATA ONE TIME */     
    // User.insertMany(dataUser);
-   //Students.insertMany(dataStudent);
+   Students.insertMany(dataStudent);
   })
   .catch((error) => console.log(`${error} did not connect`));
