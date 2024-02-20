@@ -11,6 +11,7 @@ import {
   Grid,
   useMediaQuery,
   useTheme,
+  Autocomplete,
 } from "@mui/material";
 import Header from "components/Header";
 import { useDispatch } from "react-redux";
@@ -21,19 +22,19 @@ import { useGetStudentQuery } from "state/api";
 import { DataGrid } from "@mui/x-data-grid";
 import Distritos from "../../assets/data/Distritos.json";
 import Provincias from "../../assets/data/Provincias.json";
+import Instituciones from "../../assets/data/Instituciones.json";
 import {
-   etniaData,
-   sexoData,
-   quintilData,
-   sostenimientoData,
-   areaData,
-   regionData,
-   regimenData,
-   //isecData,
-   zonaData,
-   gradoData,
- } from "../../assets/data/index.js";
-  
+  etniaData,
+  sexoData,
+  quintilData,
+  sostenimientoData,
+  areaData,
+  regionData,
+  regimenData,
+  //isecData,
+  zonaData,
+  gradoData,
+} from "../../assets/data/index.js";
 
 const columns = [
   {
@@ -110,14 +111,31 @@ const columns = [
 ];
 
 const Bayes = () => {
+  const [distritojson, setDistritojson] = useState([]);
+  const [provinciajson, setProvinciajson] = useState([]);
+  const [institucionjson, setInstitucionesjson] = useState([]);
+  const [etniajson, setEtniajson] = useState([]);
+  const [areajson, setAreajson] = useState([]);
+  const [regionjson, setRegionjson] = useState([]);
+  const [regimenjson, setRegimenjson] = useState([]);
+  const [sexojson, setSexojson] = useState([]);
+  ///////////////////////////////////////////////////////////////////////
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [cedula, setCedula] = useState("");
   const [edad, setEdad] = useState("");
-  const [distrito, setDistrito] = useState("");
+  const [institucion, setInstitucion] = useState(
+    institucionjson[0]?.["Nombre_Institucion"] || null
+  );
+  const [institucionFiltrada, setInstitucionFiltrada] = useState([]);
+  const [distrito, setDistrito] = useState(
+    distritojson[0]?.["Nombre del Distrito"] || null
+  );
   const [sexo, setSexo] = useState("");
-  const [etnia, setEtnia] = useState("");
-  const [provincia, setProvincia] = useState("");
+  const [etnia, setEtnia] = useState(etniaData[0].nombre || null);
+  const [provincia, setProvincia] = useState(
+    provinciajson[0]?.["Nombre de Provincia"] || null
+  );
   const [area, setArea] = useState("");
   const [regionNatural, setRegionNatural] = useState("");
   const [regimenEscolar, setRegimenEscolar] = useState("");
@@ -129,24 +147,12 @@ const Bayes = () => {
   const [grado, setGrado] = useState("");
   const [umbralGeo, setUmbralGeo] = useState("");
   const [abandono, setAbandono] = useState("");
+  /////////////////////////////
 
-  //const [estudiantes, setEstudiantes] = useState([]);
   const isNonMediumScreens = useMediaQuery("(min-width: 1200px)");
   const theme = useTheme();
   const dispatch = useDispatch();
   const { data, isLoading } = useGetStudentQuery();
-  console.log(data);
-
-  //const distritos = JSON.parse(Distritos);
-  //console.log(distritos);
-  const [distritojson, setDistritojson] = useState([]);
-  const [provinciajson, setProvinciajson] = useState([]);
-  const [etniajson, setEtniajson] = useState([]);
-  const [areajson, setAreajson] = useState([]);
-  const [regionjson, setRegionjson] = useState([]);
-  const [regimenjson, setRegimenjson] = useState([]);
-  const [sexojson, setSexojson] = useState([]);
-  
 
   const handleChangeNombre = (event) => {
     setNombre(event.target.value);
@@ -164,20 +170,24 @@ const Bayes = () => {
     setEdad(event.target.value);
   };
 
-  const handleChangeDistrito = (event) => {
-    setDistrito(event.target.value);
+  const handleChangeDistrito = (event, newValue) => {
+    setDistrito(newValue);
   };
 
   const handleChangeSexo = (event) => {
     setSexo(event.target.value);
   };
 
-  const handleChangeEtnia = (event) => {
-    setEtnia(event.target.value);
+  const handleChangeEtnia = (event, newValue) => {
+    setEtnia(newValue);
   };
 
-  const handleChangeProvincia = (event) => {
-    setProvincia(event.target.value);
+  const handleChangeInstitucion = (event, newValue) => {
+    setInstitucion(newValue);
+  };
+
+  const handleChangeProvincia = (event, newValue) => {
+    setProvincia(newValue);
   };
 
   const handleChangeArea = (event) => {
@@ -224,6 +234,14 @@ const Bayes = () => {
     setAbandono(event.target.value);
   };
 
+  ///////////////////////////////////////////////////////////////////////////
+  //const options = ['Value 1', 'Value 2'];
+  //const [value, setValue] = useState(options[0]);
+  const [inputEtnia, setInputEtnia] = useState("");
+  const [inputDistrito, setInputDistrito] = useState("");
+  const [inputInstitucion, setInputInstitucion] = useState("");
+  const [inputProvincia, setInputProvincia] = useState("");
+
   const handleSubmit = () => {
     const nuevoEstudiante = {
       nombre: nombre,
@@ -250,17 +268,43 @@ const Bayes = () => {
 
   // Aquí puedes enviar el nuevo estudiante al backend para ser guardado en la base de datos
 
-   useEffect(() => {
-        setDistritojson(Distritos)
-        setProvinciajson(Provincias)
-        setEtniajson(etniaData)
-        setAreajson(areaData)
-        setRegionjson(regionData)
-        setRegimenjson(regimenData)
-        setSexojson(sexoData)
-    }, []);
-     
-    /* useEffect(() => {
+  useEffect(() => {
+    setDistritojson(Distritos);
+    setProvinciajson(Provincias);
+    setInstitucionesjson(Instituciones);
+    setEtniajson(etniaData);
+    setAreajson(areaData);
+    setRegionjson(regionData);
+    setRegimenjson(regimenData);
+    setSexojson(sexoData);
+  }, []);
+
+  useEffect(() => {
+    console.log(provinciajson);
+    if (provincia) {
+      const provinciaSeleccionada = provinciajson.find(
+        (p) => p["Nombre de Provincia"] === provincia
+      );
+      //console.log(provinciaSeleccionada);
+      //console.log(institucionjson)
+      // Filtrar las instituciones basadas en el distrito seleccionado
+      const institucionFiltrada = institucionjson.filter((institucion) => {
+        return (
+          institucion["Cod_Provincia"] === String(provinciaSeleccionada["Codigo de Provincia"])
+        );
+      });
+      //console.log(provinciaSeleccionada["Codigo de Provincia"])
+      console.log(institucionFiltrada)
+
+      setInstitucionFiltrada(institucionFiltrada);
+    } else {
+      // Si no hay distrito seleccionado, mostrar todas las instituciones
+      setInstitucionFiltrada(institucionjson);
+    }
+  }, [provincia, provinciajson]);
+
+  //console.log(provincia);
+  /* useEffect(() => {
         // Cargar los datos desde el archivo JSON (en este caso, options.json)
         fetch("../../assets/data/Distritos.json")
           .then((response) => response.json())
@@ -281,7 +325,7 @@ const Bayes = () => {
           "& > div": { gridColumn: isNonMediumScreens ? undefined : "span 12" },
         }}
       >
-        <Box gridColumn="span 8" gridRow="span 3">          
+        <Box gridColumn="span 8" gridRow="span 3">
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -316,71 +360,99 @@ const Bayes = () => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-            <InputLabel id="dynamic-select-label">Distrito</InputLabel>
-              <Select
-                labelId="dynamic-select-label"
-                id="dynamic-select"
-                value={distrito}
-                label="Options"
-                onChange={handleChangeDistrito}
-              >
-                {distritojson.map((option) => (
-                  <MenuItem key={option["Codigo de Distrito"]} value={option["Nombre del Distrito"]}>
-                    {option["Nombre del Distrito"]}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-            <InputLabel id="dynamic-select-label">Sexo</InputLabel>
-              <Select
-                labelId="dynamic-select-label"
-                id="dynamic-select"
+              <Autocomplete
                 value={sexo}
-                label="Options"
-                onChange={handleChangeSexo}
-              >
-                {sexojson.map((option) => (
-                  <MenuItem key={option.codigo} value={option.nombre}>
-                    {option.nombre}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <InputLabel id="dynamic-select-label">Etnia</InputLabel>
-              <Select
-                labelId="dynamic-select-label"
-                id="dynamic-select"
-                value={etnia}
-                label="Options"
                 onChange={handleChangeEtnia}
-              >
-                {etniajson.map((option) => (
-                  <MenuItem key={option.codigo} value={option.nombre}>
-                    {option.nombre}
-                  </MenuItem>
-                ))}
-              </Select>
+                inputValue={inputSexo}
+                onInputChange={(event, newInputValue) => {
+                  setSexoEtnia(newInputValue);
+                }}
+                id="manageable-states-demo"
+                options={sexojson.map((option) => {
+                  return option.nombre;
+                })}
+                //sx={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Sexo" />
+                )}
+              />
             </Grid>
             <Grid item xs={12} sm={6}>
-            <InputLabel id="dynamic-select-label">Provincia</InputLabel>
-              <Select
-                labelId="dynamic-select-label"
-                id="dynamic-select"
+              <Autocomplete
+                value={etnia}
+                onChange={handleChangeEtnia}
+                inputValue={inputEtnia}
+                onInputChange={(event, newInputValue) => {
+                  setInputEtnia(newInputValue);
+                }}
+                id="manageable-states-demo"
+                options={etniajson.map((option) => {
+                  return option.nombre;
+                })}
+                //sx={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Etnia" />
+                )}
+              />
+            </Grid>
+            {/* PROVINCIAS*/}
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
                 value={provincia}
-                label="Options"
                 onChange={handleChangeProvincia}
-              >
-                {provinciajson.map((option) => (
-                  <MenuItem key={option["Codigo de Provincia"]} value={option["Nombre de Provincia"]}>
-                    {option["Nombre de Provincia"]}
-                  </MenuItem>
-                ))}
-              </Select>
+                inputValue={inputProvincia}
+                onInputChange={(event, newInputValue) => {
+                  setInputProvincia(newInputValue);
+                }}
+                id="manageable-states-demo"
+                options={provinciajson.map((option) => {
+                  return option["Nombre de Provincia"];
+                })}
+                //sx={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Provincia" />
+                )}
+              />
+            </Grid>
+            {/* INSTITUCIONES */}
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                value={institucion}
+                onChange={handleChangeInstitucion}
+                inputValue={inputInstitucion}
+                onInputChange={(event, newInputValue) => {
+                  setInputInstitucion(newInputValue);
+                }}
+                id="manageable-states-demo"
+                options={institucionFiltrada.map((option) => {return `${option["Nombre_Institucion"]}-${option["AMIE"]}`;})}
+                //institucionjson.map((option) => {return `${option["Nombre_Institucion"]}-${option["AMIE"]}`;})
+                //sx={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Institucion" />
+                )}
+              />
             </Grid>
             <Grid item xs={12} sm={6}>
-            <InputLabel id="dynamic-select-label">Área</InputLabel>
+              <Autocomplete
+                value={distrito}
+                onChange={handleChangeDistrito}
+                inputValue={inputDistrito}
+                onInputChange={(event, newInputValue) => {
+                  setInputDistrito(newInputValue);
+                }}
+                id="manageable-states-demo"
+                options={distritojson.map((option) => {
+                  return option["Nombre del Distrito"];
+                })}
+                //sx={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Distrito" />
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <InputLabel id="dynamic-select-label">Área</InputLabel>
               <Select
                 labelId="dynamic-select-label"
                 id="dynamic-select"
@@ -396,7 +468,7 @@ const Bayes = () => {
               </Select>
             </Grid>
             <Grid item xs={12} sm={6}>
-            <InputLabel id="dynamic-select-label">Region Natural</InputLabel>
+              <InputLabel id="dynamic-select-label">Region Natural</InputLabel>
               <Select
                 labelId="dynamic-select-label"
                 id="dynamic-select"
@@ -412,7 +484,7 @@ const Bayes = () => {
               </Select>
             </Grid>
             <Grid item xs={12} sm={6}>
-            <InputLabel id="dynamic-select-label">Regimen Escolar</InputLabel>
+              <InputLabel id="dynamic-select-label">Regimen Escolar</InputLabel>
               <Select
                 labelId="dynamic-select-label"
                 id="dynamic-select"
