@@ -9,6 +9,7 @@ import Layout from "scenes/layout";
 import Dashboard from "scenes/dashboard";
 import Bayes from "scenes/bayes";
 import Login from "scenes/login";
+import Logistica from "scenes/logistica";
 
 
 function App() {
@@ -47,6 +48,11 @@ function App() {
               <Route path="/Bayes" element={
                 isAuth && (
                   <Bayes/>
+                ) 
+              } />      
+              <Route path="/Logistica" element={
+                isAuth && (
+                  <Logistica/>
                 ) 
               } />      
             </Route>
