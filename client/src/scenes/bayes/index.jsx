@@ -174,8 +174,8 @@ const Bayes = () => {
     setDistrito(newValue);
   };
 
-  const handleChangeSexo = (event) => {
-    setSexo(event.target.value);
+  const handleChangeSexo = (event, newSexo) => {
+    setSexo(newSexo);
   };
 
   const handleChangeEtnia = (event, newValue) => {
@@ -241,6 +241,7 @@ const Bayes = () => {
   const [inputDistrito, setInputDistrito] = useState("");
   const [inputInstitucion, setInputInstitucion] = useState("");
   const [inputProvincia, setInputProvincia] = useState("");
+  const [inputSexo, setInputSexo] = useState("");
 
   const handleSubmit = () => {
     const nuevoEstudiante = {
@@ -362,10 +363,10 @@ const Bayes = () => {
             <Grid item xs={12} sm={6}>
               <Autocomplete
                 value={sexo}
-                onChange={handleChangeEtnia}
+                onChange={handleChangeSexo}
                 inputValue={inputSexo}
                 onInputChange={(event, newInputValue) => {
-                  setSexoEtnia(newInputValue);
+                  setInputSexo(newInputValue);
                 }}
                 id="manageable-states-demo"
                 options={sexojson.map((option) => {
