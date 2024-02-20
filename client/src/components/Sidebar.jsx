@@ -37,11 +37,7 @@ const navItems = [
   {
     text: "Dashboard",
     icon: <HomeOutlined />,
-  },
-  {
-    text: "Estudiantes",
-    icon: null,
-  },
+  },  
   {
     text: "Estudiantes",
     icon: <ShoppingCartOutlined />,
