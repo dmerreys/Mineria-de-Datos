@@ -7,7 +7,7 @@ import { themeSettings } from "theme";
 import { useState } from "react";
 import Layout from "scenes/layout";
 import Dashboard from "scenes/dashboard";
-import Bayes from "scenes/bayes";
+import EstudiantesNuevos from "scenes/estudiantesNuevos";
 import Login from "scenes/login";
 import Logistica from "scenes/logistica";
 
@@ -45,9 +45,9 @@ function App() {
                   <Dashboard/>
                 ) 
               } />      
-              <Route path="/Bayes" element={
+              <Route path="/Estudiantes" element={
                 isAuth && (
-                  <Bayes/>
+                  <EstudiantesNuevos/>
                 ) 
               } />      
               <Route path="/Logistica" element={

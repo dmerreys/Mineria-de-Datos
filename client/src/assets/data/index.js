@@ -111,11 +111,11 @@ export const regionData = [
 
 export const regimenData = [
     {
-        nombre: "Costa - Galápagos",
+        nombre: "Costa",
         codigo: "1",
     },
     {
-        nombre: "Sierra - Amazonia",
+        nombre: "Sierra",
         codigo: "2",
     },
 ];
@@ -151,43 +151,43 @@ export const isecData = [
 
 export const zonaData = [
     {
-        nombre: "Zona 1 (Esmeraldas - Carchi- Imbabura - Sucumbíos)",
+        nombre: "Zona 1",
         codigo: "1",
     },
     {
-        nombre: "Zona 2 (Pichincha (excepto Quito) - Napo - Orellana)",
+        nombre: "Zona 2",
         codigo: "2",
     },
     {
-        nombre: "Zona 3 (Cotopaxi - Chimborazo - Tungurahua - Pastaza)",
+        nombre: "Zona 3",
         codigo: "3",
     },
     {
-        nombre: "Zona 4 (Manabí - Santo Domingo de los Tsáchilas)",
+        nombre: "Zona 4",
         codigo: "4",
     },
     {
-        nombre: "Zona 5 (Bolívar - Guaya (excepto Guayaquil - Samborondón y Durán) - Los Ríos - Santa Elena - Galápagos)",
+        nombre: "Zona 5",
         codigo: "5",
     },
     {
-        nombre: "Zona 6 (Azuay - Cañar - Morona Santiago)",
+        nombre: "Zona 6",
         codigo: "6",
     },
     {
-        nombre: "Zona 7 (El Oro - Loja - Zamora Chinchipe)",
+        nombre: "Zona 7",
         codigo: "7",
     },
     {
-        nombre: "Zona 8 (Guayaquil - Samborondón - Durán)",
+        nombre: "Zona 8",
         codigo: "8",
     },
     {
-        nombre: "Zona 9 (Distrito Metropolitano de Quito)",
+        nombre: "Zona 9",
         codigo: "9",
     },
     {
-        nombre: "Zona No Delimitada (El Piedrero - Manga del Cura - Las Golondrinas)",
+        nombre: "Zona No Delimitada",
         codigo: "90",
     },
 ];

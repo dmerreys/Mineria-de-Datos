@@ -5,7 +5,7 @@ export const api = createApi({
   reducerPath: "adminApi",
   tagTypes: [
     "User",
-    "ModeloBayes",
+    "Estudiantes",
     "Dashboard",
     "Student",
   ],
@@ -36,6 +36,13 @@ export const api = createApi({
         body: payload,
       }),
     }),
+    postEstudiante: build.mutation({
+      query: (estudianteData) => ({
+        url: "student/estudiantes",
+        method: "POST",
+        body: estudianteData,
+      }),
+    }),
   }),
 });
 
@@ -48,6 +55,7 @@ export const {
   //useGetSalesQuery,
   useGetAdminsQuery,
   useGetUserPerformanceQuery,
+  usePostEstudianteMutation,
   useGetStudentQuery,
   useGetDashboardQuery,
   usePostLoginMutation,
