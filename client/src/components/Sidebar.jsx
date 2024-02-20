@@ -39,11 +39,23 @@ const navItems = [
     icon: <HomeOutlined />,
   },
   {
-    text: "Modelos",
+    text: "Estudiantes",
     icon: null,
   },
   {
     text: "Estudiantes",
+    icon: <ShoppingCartOutlined />,
+  },
+  {
+    text: "Modelos",
+    icon: null,
+  },
+  {
+    text: "Bayes2",
+    icon: <ShoppingCartOutlined />,
+  },
+  {
+    text: "Logistica",
     icon: <ShoppingCartOutlined />,
   },
 ];

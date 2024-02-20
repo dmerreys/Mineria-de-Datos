@@ -9,6 +9,7 @@ import Layout from "scenes/layout";
 import Dashboard from "scenes/dashboard";
 import EstudiantesNuevos from "scenes/estudiantesNuevos";
 import Login from "scenes/login";
+import Logistica from "scenes/logistica";
 
 
 function App() {
@@ -47,6 +48,11 @@ function App() {
               <Route path="/Estudiantes" element={
                 isAuth && (
                   <EstudiantesNuevos/>
+                ) 
+              } />      
+              <Route path="/Logistica" element={
+                isAuth && (
+                  <Logistica/>
                 ) 
               } />      
             </Route>
