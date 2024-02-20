@@ -124,28 +124,28 @@ export const regimenData = [
 export const isecData = [
     {
         nombre: "Muy Bajo",
-        max: 1,
-        max: 2,
+        max: -1.324390,
+        min: -3.1,
     },
     {
         nombre: "Bajo",
-        max: 1,
-        max: 2,
+        max: -0.666681,
+        min: -1.324367,
     },
     {
         nombre: "Medio",
-        max: 1,
-        max: 2,
+        max: 0.086000,
+        min: -0.666660,
     },
     {
         nombre: "Alto",
-        max: 1,
-        max: 2,
+        max: 0.811803,
+        min: 0.086008,
     },
     {
-        nombre: "Muy",
-        max: 1,
-        max: 2,
+        nombre: "Muy Alto",
+        max: 3.1,
+        min: 0.811830,
     }
 ];
 

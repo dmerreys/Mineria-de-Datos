@@ -34,6 +34,7 @@ import {
   //isecData,
   zonaData,
   gradoData,
+  isecData,
 } from "../../assets/data/index.js";
 
 const columns = [
@@ -111,6 +112,17 @@ const columns = [
 ];
 
 const Bayes = () => {
+  /////////////////////////////////////////////////////////////////////////////////////////////
+  /* Constantes basicas */
+
+  const isNonMediumScreens = useMediaQuery("(min-width: 1200px)");
+  const theme = useTheme();
+  const dispatch = useDispatch();
+  const { data, isLoading } = useGetStudentQuery();
+
+  /////////////////////////////////////////////////////////////////////////////////////////////
+  /* seteos de datos de estudiantes */
+
   const [distritojson, setDistritojson] = useState([]);
   const [provinciajson, setProvinciajson] = useState([]);
   const [institucionjson, setInstitucionesjson] = useState([]);
@@ -119,18 +131,17 @@ const Bayes = () => {
   const [regionjson, setRegionjson] = useState([]);
   const [regimenjson, setRegimenjson] = useState([]);
   const [sexojson, setSexojson] = useState([]);
-  ///////////////////////////////////////////////////////////////////////
+  const [gradojson, setGradojson] = useState([]);
+  const [zonajson, setZonajson] = useState([]);
+  const [isecjson, setIsecjson] = useState([]);
+  const [quintiljson, setQuintiljson] = useState([]);
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [cedula, setCedula] = useState("");
   const [edad, setEdad] = useState("");
-  const [institucion, setInstitucion] = useState(
-    institucionjson[0]?.["Nombre_Institucion"] || null
-  );
+  const [institucion, setInstitucion] = useState("");
   const [institucionFiltrada, setInstitucionFiltrada] = useState([]);
-  const [distrito, setDistrito] = useState(
-    distritojson[0]?.["Nombre del Distrito"] || null
-  );
+  const [distrito, setDistrito] = useState("");
   const [sexo, setSexo] = useState("");
   const [etnia, setEtnia] = useState(etniaData[0].nombre || null);
   const [provincia, setProvincia] = useState(
@@ -147,12 +158,23 @@ const Bayes = () => {
   const [grado, setGrado] = useState("");
   const [umbralGeo, setUmbralGeo] = useState("");
   const [abandono, setAbandono] = useState("");
-  /////////////////////////////
 
-  const isNonMediumScreens = useMediaQuery("(min-width: 1200px)");
-  const theme = useTheme();
-  const dispatch = useDispatch();
-  const { data, isLoading } = useGetStudentQuery();
+  /////////////////////////////////////////////////////////////////////////////////////////////
+  /* Seteo de Inputs */
+  const [inputEtnia, setInputEtnia] = useState("");
+  const [inputDistrito, setInputDistrito] = useState("");
+  const [inputInstitucion, setInputInstitucion] = useState("");
+  const [inputProvincia, setInputProvincia] = useState("");
+  const [inputSexo, setInputSexo] = useState("");
+  const [inputArea, setInputArea] = useState("");
+  const [inputRegionNatural, setInputRegionNatural] = useState("");
+  const [inputRegimenEscolar, setInputRegimenEscolar] = useState("");
+  const [inputGrado, setInputGrado] = useState("");
+  const [inputZona, setInputZona] = useState("");
+  const [inputQuintil, setInputQuintil] = useState("");
+
+  /////////////////////////////////////////////////////////////////////////////////////////////
+  /* Handler Changes */
 
   const handleChangeNombre = (event) => {
     setNombre(event.target.value);
@@ -182,35 +204,56 @@ const Bayes = () => {
     setEtnia(newValue);
   };
 
-  const handleChangeInstitucion = (event, newValue) => {
-    setInstitucion(newValue);
+  const handleChangeInstitucion = (event, newInstitucion) => {
+    setInstitucion(newInstitucion);
+    const codigodesp = newInstitucion.split("-")[1];   
+    console.log(codigodesp)
+    const institucionEncontrada = institucionjson.find((institucion) => {
+      return institucion.AMIE === codigodesp;
+    }); 
+    console.log(institucionEncontrada)
+    setZona(institucionEncontrada.Zona);
+    setRegimenEscolar(institucionEncontrada.Regimen_Escolar);
+    setSostenimiento(institucionEncontrada.Sostenimiento);
+    setUmbralGeo(institucionEncontrada.Categoria_Umbral);
   };
 
   const handleChangeProvincia = (event, newValue) => {
     setProvincia(newValue);
   };
 
-  const handleChangeArea = (event) => {
-    setArea(event.target.value);
+  const handleChangeArea = (event, newArea) => {
+    setArea(newArea);
   };
 
-  const handleChangeRegionNatural = (event) => {
-    setRegionNatural(event.target.value);
+  const handleChangeRegionNatural = (event, newRegion) => {
+    setRegionNatural(newRegion);
   };
 
-  const handleChangeRegimenEscolar = (event) => {
-    setRegimenEscolar(event.target.value);
+  const handleChangeRegimenEscolar = (event, newRegimen) => {
+    setRegimenEscolar(newRegimen);
   };
 
   const handleChangeSostenimiento = (event) => {
     setSostenimiento(event.target.value);
   };
 
-  const handleChangeQuintil = (event) => {
-    setQuintil(event.target.value);
+  const handleChangeQuintil = (event, newQuintil) => {
+    setQuintil(newQuintil);
   };
 
   const handleChangeIsec = (event) => {
+    const valorIsec = parseFloat(event.target.value);
+
+    const categoriaEncontrada = isecjson.find((categoria) => {
+      return valorIsec >= categoria.min && valorIsec <= categoria.max;
+    });    
+    if (categoriaEncontrada) {      
+      setCatIsec(categoriaEncontrada.nombre);
+    } else {
+      setCatIsec("");
+    }
+
     setIsec(event.target.value);
   };
 
@@ -218,12 +261,12 @@ const Bayes = () => {
     setCatIsec(event.target.value);
   };
 
-  const handleChangeZona = (event) => {
-    setZona(event.target.value);
+  const handleChangeZona = (event, newZona) => {
+    setZona(newZona);
   };
 
-  const handleChangeGrado = (event) => {
-    setGrado(event.target.value);
+  const handleChangeGrado = (event, newGrado) => {
+    setGrado(newGrado);
   };
 
   const handleChangeUmbralGeo = (event) => {
@@ -234,14 +277,8 @@ const Bayes = () => {
     setAbandono(event.target.value);
   };
 
-  ///////////////////////////////////////////////////////////////////////////
-  //const options = ['Value 1', 'Value 2'];
-  //const [value, setValue] = useState(options[0]);
-  const [inputEtnia, setInputEtnia] = useState("");
-  const [inputDistrito, setInputDistrito] = useState("");
-  const [inputInstitucion, setInputInstitucion] = useState("");
-  const [inputProvincia, setInputProvincia] = useState("");
-  const [inputSexo, setInputSexo] = useState("");
+  /////////////////////////////////////////////////////////////////////////////////////////////
+  /* handleSubmit */
 
   const handleSubmit = () => {
     const nuevoEstudiante = {
@@ -267,7 +304,8 @@ const Bayes = () => {
     };
   };
 
-  // Aquí puedes enviar el nuevo estudiante al backend para ser guardado en la base de datos
+  /////////////////////////////////////////////////////////////////////////////////////////////
+  /* Use Effects */
 
   useEffect(() => {
     setDistritojson(Distritos);
@@ -278,55 +316,51 @@ const Bayes = () => {
     setRegionjson(regionData);
     setRegimenjson(regimenData);
     setSexojson(sexoData);
+    setGradojson(gradoData);
+    setZonajson(zonaData);
+    setQuintiljson(quintilData);
+    setIsecjson(isecData);
   }, []);
 
   useEffect(() => {
-    console.log(provinciajson);
     if (provincia) {
       const provinciaSeleccionada = provinciajson.find(
         (p) => p["Nombre de Provincia"] === provincia
       );
-      //console.log(provinciaSeleccionada);
-      //console.log(institucionjson)
-      // Filtrar las instituciones basadas en el distrito seleccionado
       const institucionFiltrada = institucionjson.filter((institucion) => {
         return (
-          institucion["Cod_Provincia"] === String(provinciaSeleccionada["Codigo de Provincia"])
+          institucion["Cod_Provincia"] ===
+          String(provinciaSeleccionada["Codigo de Provincia"])
         );
       });
-      //console.log(provinciaSeleccionada["Codigo de Provincia"])
-      console.log(institucionFiltrada)
-
       setInstitucionFiltrada(institucionFiltrada);
     } else {
-      // Si no hay distrito seleccionado, mostrar todas las instituciones
       setInstitucionFiltrada(institucionjson);
     }
   }, [provincia, provinciajson]);
 
-  //console.log(provincia);
-  /* useEffect(() => {
-        // Cargar los datos desde el archivo JSON (en este caso, options.json)
-        fetch("../../assets/data/Distritos.json")
-          .then((response) => response.json())
-          .then((data) => setOptions(data))
-          .catch((error) => console.error("Error al obtener opciones:", error));
-      }, []);
-       */
+  /////////////////////////////////////////////////////////////////////////////////////////////
+  /* Interfaz */
+
   return (
+    //Interfaz
+    //Contenedor Principal
     <Box m="1.5rem 2.5rem">
       <Header title="Bayes" subtitle="Datos Estudiantes" />
       <Box
         mt="20px"
         display="grid"
-        gridTemplateColumns="repeat(1, 1fr)"
-        gridAutoRows="160px"
+        gridTemplateColumns="auto"
+        gridAutoRows="auto"
         gap="20px"
+        borderRadius="0.55rem"
+        backgroundColor={theme.palette.background.alt}
         sx={{
           "& > div": { gridColumn: isNonMediumScreens ? undefined : "span 12" },
+          "&": { gridAutoRows: "auto" }
         }}
       >
-        <Box gridColumn="span 8" gridRow="span 3">
+        <Box gridColumn="span 1" p="1.25rem 1rem">
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -373,9 +407,7 @@ const Bayes = () => {
                   return option.nombre;
                 })}
                 //sx={{ width: 300 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Sexo" />
-                )}
+                renderInput={(params) => <TextField {...params} label="Sexo" />}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -396,6 +428,75 @@ const Bayes = () => {
                 )}
               />
             </Grid>
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                value={regionNatural}
+                onChange={handleChangeRegionNatural}
+                inputValue={inputRegionNatural}
+                onInputChange={(event, newInputValue) => {
+                  setInputRegionNatural(newInputValue);
+                }}
+                id="manageable-states-demo"
+                options={regionjson.map((option) => {
+                  return option.nombre;
+                })}
+                renderInput={(params) => (
+                  <TextField {...params} label="Región Natural" />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                value={area}
+                onChange={handleChangeArea}
+                inputValue={inputArea}
+                onInputChange={(event, newInputValue) => {
+                  setInputArea(newInputValue);
+                }}
+                id="manageable-states-demo"
+                options={areajson.map((option) => {
+                  return option.nombre;
+                })}
+                renderInput={(params) => <TextField {...params} label="Area" />}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                value={quintil}
+                onChange={handleChangeQuintil}
+                inputValue={inputQuintil}
+                onInputChange={(event, newInputValue) => {
+                  setInputQuintil(newInputValue);
+                }}
+                id="manageable-states-demo"
+                options={quintiljson.map((option) => {
+                  return option.nombre;
+                })}
+                //sx={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Quintil" />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="ISEC"
+                value={isec}
+                
+                onChange={handleChangeIsec}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Categoría ISEC"
+                value={catIsec}                              
+                disabled // Deshabilitar la edición del campo
+                fullWidth
+              />
+            </Grid>
+
             {/* PROVINCIAS*/}
             <Grid item xs={12} sm={6}>
               <Autocomplete
@@ -425,7 +526,9 @@ const Bayes = () => {
                   setInputInstitucion(newInputValue);
                 }}
                 id="manageable-states-demo"
-                options={institucionFiltrada.map((option) => {return `${option["Nombre_Institucion"]}-${option["AMIE"]}`;})}
+                options={institucionFiltrada.map((option) => {
+                  return `${option["Nombre_Institucion"]}-${option["AMIE"]}`;
+                })}
                 //institucionjson.map((option) => {return `${option["Nombre_Institucion"]}-${option["AMIE"]}`;})
                 //sx={{ width: 300 }}
                 renderInput={(params) => (
@@ -434,6 +537,49 @@ const Bayes = () => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+              <Autocomplete
+                value={grado}
+                onChange={handleChangeGrado}
+                inputValue={inputGrado}
+                onInputChange={(event, newInputValue) => {
+                  setInputGrado(newInputValue);
+                }}
+                id="manageable-states-demo"
+                options={gradojson.map((option) => {
+                  return option.nombre;
+                })}
+                //sx={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Grado" />
+                )}
+              />
+            </Grid>
+            {/* Campo de Zona */}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Zona"
+                value={zona}
+                disabled // Deshabilitar la edición del campo
+                fullWidth
+              />
+            </Grid>
+            {/* <Grid item xs={12} sm={6}>
+              <Autocomplete
+                value={zona}
+                onChange={handleChangeZona}
+                inputValue={inputZona}
+                onInputChange={(event, newInputValue) => {
+                  setInputZona(newInputValue);
+                }}
+                id="manageable-states-demo"
+                options={zonajson.map((option) => {
+                  return option.nombre;
+                })}
+                renderInput={(params) => <TextField {...params} label="Zona" />}
+              />
+            </Grid> */}
+
+            {/* <Grid item xs={12} sm={6}>
               <Autocomplete
                 value={distrito}
                 onChange={handleChangeDistrito}
@@ -450,112 +596,51 @@ const Bayes = () => {
                   <TextField {...params} label="Distrito" />
                 )}
               />
-            </Grid>
-
+            </Grid> */}
+            {/* Campo de Regimen Escolar */}
             <Grid item xs={12} sm={6}>
-              <InputLabel id="dynamic-select-label">Área</InputLabel>
-              <Select
-                labelId="dynamic-select-label"
-                id="dynamic-select"
-                value={area}
-                label="Options"
-                onChange={handleChangeArea}
-              >
-                {areajson.map((option) => (
-                  <MenuItem key={option.codigo} value={option.nombre}>
-                    {option.nombre}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <InputLabel id="dynamic-select-label">Region Natural</InputLabel>
-              <Select
-                labelId="dynamic-select-label"
-                id="dynamic-select"
-                value={regionNatural}
-                label="Options"
-                onChange={handleChangeRegionNatural}
-              >
-                {regionjson.map((option) => (
-                  <MenuItem key={option.codigo} value={option.nombre}>
-                    {option.nombre}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <InputLabel id="dynamic-select-label">Regimen Escolar</InputLabel>
-              <Select
-                labelId="dynamic-select-label"
-                id="dynamic-select"
+              <TextField
+                label="Regimen Escolar"
                 value={regimenEscolar}
-                label="Options"
-                onChange={handleChangeRegimenEscolar}
-              >
-                {regimenjson.map((option) => (
-                  <MenuItem key={option.codigo} value={option.nombre}>
-                    {option.nombre}
-                  </MenuItem>
-                ))}
-              </Select>
+                disabled // Deshabilitar la edición del campo
+                fullWidth
+              />
             </Grid>
+            {/* <Grid item xs={12} sm={6}>
+              <Autocomplete
+                value={regimenEscolar}
+                onChange={handleChangeRegimenEscolar}
+                inputValue={inputRegimenEscolar}
+                onInputChange={(event, newInputValue) => {
+                  setInputRegimenEscolar(newInputValue);
+                }}
+                id="manageable-states-demo"
+                options={regimenjson.map((option) => {
+                  return option.nombre;
+                })}
+                renderInput={(params) => (
+                  <TextField {...params} label="Regimen Escolar" />
+                )}
+              />
+            </Grid> */}
+            {/* Campo de Sostenimiento */}
             <Grid item xs={12} sm={6}>
               <TextField
                 label="Sostenimiento"
                 value={sostenimiento}
-                onChange={handleChangeSostenimiento}
+                disabled // Deshabilitar la edición del campo
                 fullWidth
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+
+            {/* <Grid item xs={12} sm={6}>
               <TextField
-                label="Quintil"
-                value={quintil}
-                onChange={handleChangeQuintil}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="ISEC"
-                value={isec}
-                onChange={handleChangeIsec}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Categoría ISEC"
-                value={catIsec}
-                onChange={handleChangeCatIsec}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Zona"
-                value={zona}
-                onChange={handleChangeZona}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Grado"
-                value={grado}
-                onChange={handleChangeGrado}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Umbral Geo"
+                label="Categoria Umbral"
                 value={umbralGeo}
-                onChange={handleChangeUmbralGeo}
+                disabled
                 fullWidth
               />
-            </Grid>
+            </Grid> */}
             <Grid item xs={12} sm={6}>
               <TextField
                 label="Abandono"
@@ -576,7 +661,7 @@ const Bayes = () => {
             </Grid>
           </Grid>
         </Box>
-        <Box
+        {/* <Box
           gridColumn="span 8"
           gridRow="span 3"
           sx={{
@@ -620,8 +705,8 @@ const Bayes = () => {
             getRowId={(row) => row._id}
             rows={data || []}
             columns={columns}
-          /> */}
-        </Box>
+          /> 
+        </Box> */}
       </Box>
     </Box>
   );

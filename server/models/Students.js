@@ -33,7 +33,7 @@ const UserSchema = new mongoose.Schema(
     catIsec: String, 
     zona: String,
     grado: String,
-    umbralGeo: Number,
+    umbralGeo: Number,    
     amie: String,
     canton: String,
     parroquia: String,
