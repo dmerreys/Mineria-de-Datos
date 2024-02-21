@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from "react";
 import {
-  Button,
-  TextField,
-  FormControl,
-  MenuItem,
-  Select,
-  InputLabel,
   Box,
-  Typography,
-  Grid,
   useMediaQuery,
   useTheme,
-  Autocomplete,
 } from "@mui/material";
 import Header from "components/Header";
-// import { useDispatch } from "react-redux";
-// import { usePostLoginMutation, usePostSignUpMutation } from "state/api";
-// import { setUserGlobal } from "state/index";
-// import FlexBetween from "components/FlexBetween";
 import { useGetStudentQuery } from "state/api";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import {
+  quintilData,
+  sexoData,
+  etniaData,
+  areaData,
+  sostenimientoData,
+  regionData,
+  regimenData,
+  gradoData,
+  zonaData,
+  abandonoData
+} from "assets/data";
+import institucionesData from "assets/data/Instituciones.json";
+import provinciasData from "assets/data/Provincias.json";
 
 const columns = [
   {
@@ -31,7 +31,7 @@ const columns = [
     field: "nombre",
     headerName: "Nombre",
     //flex: 1,
-    //editable: true,
+    editable: true,
   },
   {
     field: "apellido",
@@ -52,126 +52,155 @@ const columns = [
     field: "sexo",
     headerName: "Sexo",
     //flex: 1,
+    valueGetter: (params) => {
+      return (
+        sexoData.find((sexo) => sexo.codigo === params.value)?.nombre ||
+        params.value
+      );
+    },
   },
   {
     field: "etnia",
     headerName: "Etnia",
     //flex: 1,
-  },
-  {
-    field: "provincia",
-    headerName: "Provincia",
-    //flex: 1,
-  },
-  {
-    field: "area",
-    headerName: "Area",
-    //flex: 1,
+    valueGetter: (params) => {
+      return (
+        etniaData.find((etnia) => etnia.codigo === params.value)?.nombre ||
+        params.value
+      );
+    },
   },
   {
     field: "regionNatural",
     headerName: "Region",
     //flex: 1,
+    valueGetter: (params) => {
+      return (
+        regionData.find((region) => region.codigo === params.value)
+          ?.nombre || params.value
+      );
+    },
   },
   {
-    field: "regimenEscolar",
-    headerName: "Regimen",
+    field: "area",
+    headerName: "Area",
     //flex: 1,
+    valueGetter: (params) => {
+      return (
+        areaData.find((area) => area.codigo === params.value)?.nombre ||
+        params.value
+      );
+    },
   },
   {
     field: "quintil",
     headerName: "Quintil",
     //flex: 1,
+    valueGetter: (params) => {
+      return (
+        quintilData.find((quintil) => quintil.codigo === params.value)
+          ?.nombre || params.value
+      );
+    },
   },
   {
     field: "isec",
     headerName: "Isec",
     //flex: 1,
   },
+  {
+    field: "catIsec",
+    headerName: "Categoría Isec",
+    //flex: 1,
+  },
+  {
+    field: "provincia",
+    headerName: "Provincia",
+    //flex: 1,
+    valueGetter: (params) => {
+      return (
+        provinciasData.find((provincia) => provincia["Codigo de Provincia"].toString() === params.value)
+          ?.["Nombre de Provincia"] || params.value
+      );
+    },
+  },
+  {
+    field: "amie",
+    headerName: "Institución",
+    //flex: 1,
+    valueGetter: (params) => {
+      return (
+        institucionesData.find((institucion) => institucion.AMIE === params.value)
+          ?.Nombre_Institucion || params.value
+      );
+    },
+  },
+  {
+    field: "grado",
+    headerName: "Grado",
+    //flex: 1,
+    valueGetter: (params) => {
+      return (
+        gradoData.find((grado) => grado.codigo === params.value)
+          ?.nombre || params.value
+      );
+    },
+  },
+  {
+    field: "zona",
+    headerName: "Zona",
+    //flex: 1,
+    valueGetter: (params) => {
+      return (
+        zonaData.find((zona) => zona.codigo === params.value)
+          ?.nombre || params.value
+      );
+    },
+  },
+  {
+    field: "regimenEscolar",
+    headerName: "Regimen",
+    //flex: 1,
+    valueGetter: (params) => {
+      return (
+        regimenData.find((regimen) => regimen.codigo === params.value)
+          ?.nombre || params.value
+      );
+    },
+  },
+  {
+    field: "sostenimiento",
+    headerName: "Sostenimiento",
+    //flex: 1,
+    valueGetter: (params) => {
+      return (
+        sostenimientoData.find((sostenimiento) => sostenimiento.codigo === params.value)
+          ?.nombre || params.value
+      );
+    },
+  },
+  {
+    field: "abandono",
+    headerName: "Abandono",
+    //flex: 1,
+    valueGetter: (params) => {
+      return (
+        abandonoData.find((abandono) => abandono.codigo === params.value)
+          ?.nombre || params.value
+      );
+    }
+  },
 ];
 
-const Logistica = () => {
-  const [inputData, setInputData] = useState([]);
-  const [prediction, setPrediction] = useState(null);
+const Predicciones = () => {
   const isNonMediumScreens = useMediaQuery("(min-width: 1200px)");
   const theme = useTheme();
-  // const dispatch = useDispatch();
   const { data, isLoading } = useGetStudentQuery();
 
   console.log(data);
 
-  const handlePrediction = async () => {
-    try {
-      const response = await fetch("http://127.0.0.1:5000/predict", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          data: inputData,
-        }),
-      });
-
-      const result = await response.json();
-      setPrediction(result);
-    } catch (error) {
-      console.error("Error al realizar la predicción:", error);
-    }
-  };
-
-  useEffect(() => {
-    setInputData([
-      [
-        "Nombre90",
-        "Apellido13",
-        "8369884",
-        15,
-        "Mujer",
-        "4",
-        "2",
-        "HEQMCZ",
-        "2",
-        "5",
-        5,
-        "Muy alto",
-        "4",
-        "4",
-        "4",
-        "2",
-        "4",
-        0.08,
-        "03759",
-      ],
-      [
-        "1",
-        "4",
-        "Fiscal",
-        "7",
-        "Sierra",
-        "1",
-        "Rural",
-        "2",
-        "6",
-        "Muy Alta",
-        17,
-        1.0,
-        "Muy Bajo",
-      ],
-    ]);
-  }, []);
-
   return (
     <Box m="1.5rem 2.5rem">
-      <div>
-        <h1>Flask API con React</h1>
-        <button onClick={handlePrediction}>Realizar Predicción</button>
-        {prediction && (
-          <div>
-            <h2>Resultado de la Predicción:</h2>
-            <p>{JSON.stringify(prediction)}</p>
-          </div>
-        )}
-      </div>
       <Header title="Regresión Logística" subtitle="Listado de Estudiantes" />
       <Box
         mt="20px"
@@ -224,6 +253,9 @@ const Logistica = () => {
             getRowId={(row) => row._id}
             rows={data || []}
             columns={columns}
+            components={{
+              Toolbar: GridToolbar,
+            }}
           />
         </Box>
       </Box>
@@ -231,4 +263,4 @@ const Logistica = () => {
   );
 };
 
-export default Logistica;
+export default Predicciones;
