@@ -8,7 +8,7 @@ const Dashboard = () => {
   const isNonMediumScreens = useMediaQuery("(min-width: 1200px)");
   const [data, setData] = useState([]);
 
-  useEffect(() => {
+ /*  useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await useGetHistoricosQuery(); // Llama a la función para obtener los datos
@@ -20,7 +20,7 @@ const Dashboard = () => {
 
     fetchData(); // Ejecuta la función para obtener los datos al cargar el componente
   }, []); // El segundo argumento [] asegura que useEffect se ejecute solo una vez al montar el componente
-
+ */
   return (
     <Box m="1.5rem 2.5rem">
       <Box
