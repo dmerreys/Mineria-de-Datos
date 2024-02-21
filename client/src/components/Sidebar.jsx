@@ -43,15 +43,11 @@ const navItems = [
     icon: <ShoppingCartOutlined />,
   },
   {
-    text: "Modelos",
+    text: "Modelo",
     icon: null,
   },
   {
-    text: "Bayes2",
-    icon: <ShoppingCartOutlined />,
-  },
-  {
-    text: "Logistica",
+    text: "Predicciones",
     icon: <ShoppingCartOutlined />,
   },
 ];

@@ -37,88 +37,10 @@ import {
   isecData,
 } from "../../assets/data/index.js";
 
-const columns = [
-  {
-    field: "_id",
-    headerName: "ID",
-    //flex: 1,
-  },
-  {
-    field: "nombre",
-    headerName: "Nombre",
-    //flex: 1,
-    //editable: true,
-  },
-  {
-    field: "apellido",
-    headerName: "Apellido",
-    //flex: 1,
-  },
-  {
-    field: "cedula",
-    headerName: "Cedula",
-    //flex: 1,
-  },
-  {
-    field: "sexo",
-    headerName: "Sexo",
-    //flex: 1,
-  },
-  {
-    field: "edad",
-    headerName: "Edad",
-    //flex: 1,
-  },
-  {
-    field: "provincia",
-    headerName: "Provincia",
-    //flex: 1,
-  },
-  {
-    field: "distrito",
-    headerName: "Distrito",
-    //flex: 1,
-  },
-  {
-    field: "etnia",
-    headerName: "Etnia",
-    //flex: 1,
-  },
-  {
-    field: "area",
-    headerName: "Area",
-    //flex: 1,
-  },
-  {
-    field: "regionNatural",
-    headerName: "Region",
-    //flex: 1,
-  },
-  {
-    field: "regimenEscolar",
-    headerName: "Regimen",
-    //flex: 1,
-  },
-  {
-    field: "quintil",
-    headerName: "Quintil",
-    //flex: 1,
-  },
-  {
-    field: "isec",
-    headerName: "Isec",
-    //flex: 1,
-  },
-];
-
 const EstudiantesNuevos = () => {
-  /////////////////////////////////////////////////////////////////////////////////////////////
   /* Constantes basicas */
-
   const isNonMediumScreens = useMediaQuery("(min-width: 1200px)");
   const theme = useTheme();
-  const dispatch = useDispatch();
-  const { data, isLoading } = useGetStudentQuery();
   const [postEstudiante] = usePostEstudianteMutation();
   /////////////////////////////////////////////////////////////////////////////////////////////
   /* seteos de datos de estudiantes */
@@ -209,16 +131,17 @@ const EstudiantesNuevos = () => {
 
   const handleChangeInstitucion = (event, newInstitucion) => {
     setInstitucion(newInstitucion);
-    const codigodesp = newInstitucion.split("-")[1];   
+    const codigodesp = newInstitucion.split("-")[1];
     const institucionEncontrada = institucionjson.find((institucion) => {
       return institucion.AMIE === codigodesp;
     });
-    
+
     setZona(institucionEncontrada.Zona);
     setRegimenEscolar(institucionEncontrada.Regimen_Escolar);
     setSostenimiento(institucionEncontrada.Sostenimiento);
     setUmbralGeo(institucionEncontrada.Categoria_Umbral);
     setCatGeo(institucionEncontrada?.["Umbral_Por_Institucion"]);
+    setAmie(codigodesp);
   };
 
   const handleChangeProvincia = (event, newValue) => {
@@ -280,6 +203,26 @@ const EstudiantesNuevos = () => {
     setAbandono(event.target.value);
   };
 
+  // Get Prediction
+  const getPrediction = async (arr) => {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/predict", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: arr,
+        }),
+      });
+
+      const result = await response.json();
+      return result.res;
+    } catch (error) {
+      console.error("Error al realizar la predicción:", error);
+    }
+  };
+
   /////////////////////////////////////////////////////////////////////////////////////////////
   /* handleSubmit */
 
@@ -307,7 +250,33 @@ const EstudiantesNuevos = () => {
       )?.codigo || null;
     const codigoZona =
       zonajson.find((zonas) => zonas.nombre === zona)?.codigo || null;
-    
+
+    const arregloPrediccion = [
+      [
+        nombre,
+        apellido,
+        cedula,
+        amie,
+        parseFloat(isec),
+        codigoProvincia.toString(),
+        catGeo,
+        sexo,
+        codigoEtnia,
+        codigoSostenimiento,
+        codigoGrado,
+        codigoRegimenEscolar,
+        codigoQuintil,
+        area,
+        codigoRegionNatural,
+        codigoZona,
+        umbralGeo,
+        catIsec,
+        Number(parseInt(edad)),
+      ],
+    ];
+
+    const pred = await getPrediction(arregloPrediccion);
+
     const nuevoEstudiante = {
       nombre: nombre,
       apellido: apellido,
@@ -328,10 +297,12 @@ const EstudiantesNuevos = () => {
       grado: codigoGrado,
       catGeo: umbralGeo,
       umbralGeo: catGeo,
-      abandono: abandono,
+      abandono: pred,
+      amie: amie,
     };
-    
+
     postEstudiante(nuevoEstudiante);
+
     setNombre("");
     setApellido("");
     setCedula("");
@@ -351,7 +322,8 @@ const EstudiantesNuevos = () => {
     setUmbralGeo("");
     setAbandono("");
     setGrado("");
-    setInstitucion( provinciajson[0]?.["Nombre de Provincia"] || null);
+    setAmie("");
+    setInstitucion(provinciajson[0]?.["Nombre de Provincia"] || null);
   };
 
   /////////////////////////////////////////////////////////////////////////////////////////////
@@ -580,8 +552,7 @@ const EstudiantesNuevos = () => {
                 id="manageable-states-demo"
                 options={institucionFiltrada.map((option) => {
                   return `${option["Nombre_Institucion"]}-${option["AMIE"]}`;
-                })}       
-                
+                })}
                 renderInput={(params) => (
                   <TextField {...params} label="Institucion" />
                 )}

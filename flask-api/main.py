@@ -1,11 +1,22 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from utils import get_dummies, drop_columns
+from utils import get_dummies, drop_columns, completeColumns, to_df
 import joblib
+import pandas as pd
+import numpy as np
 
 app = Flask(__name__)
 
 CORS(app, resources={r"/predict/*": {"origins": "http://localhost:3001"}})
+
+# def to_df(arr):
+# 	columns = ['Nombre', 'Apellido', 'Cedula', 'AMIE',
+# 							'isec', 'Cod_Provincia',
+# 							'Umbral_Geografico',
+# 							'tp_sexo', 'etnibee', 'Sostenimiento', 'grado', 'Regimen_Escolar',
+# 							'quintil', 'Area', 'nm_regi', 'Zona', 'Categoria_Umbral',
+# 							'Categoria_isec', 'Edad']
+# 	return pd.DataFrame(arr, columns=columns)
 
 #@cross_origin
 @app.route('/predict', methods=['POST'])
@@ -15,11 +26,16 @@ def predict():
 
     if not data:
         return jsonify({'error': 'Falta la información para la predicción'}), 400
-    
-    # prediction = model.predict(data)
-    # print(prediction)
+
+    data = to_df(data)
+    data = drop_columns(data)
+    data = get_dummies(data)
+    data = completeColumns(data)
+    prediction = model.predict(data.values)
+    print(prediction)
+
     # return build_actual_response(jsonify({ 'prediction': prediction[0] }))
-    return jsonify({ 'prediction': data }), 200
+    return jsonify({ 'res': prediction[0] }), 200
 
   except Exception as e:
     return jsonify({'error': str(e)}), 500

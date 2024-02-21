@@ -1,7 +1,7 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { useEffect, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { themeSettings } from "theme";
 import { useState } from "react";
@@ -9,7 +9,7 @@ import Layout from "scenes/layout";
 import Dashboard from "scenes/dashboard";
 import EstudiantesNuevos from "scenes/estudiantesNuevos";
 import Login from "scenes/login";
-import Logistica from "scenes/logistica";
+import Predicciones from "scenes/logistica";
 
 
 function App() {
@@ -18,10 +18,6 @@ function App() {
   const [user, setUser] = useState(null);
   const [secret, setSecret] = useState(null);
   const isAuth = Boolean(user) && Boolean(secret);
-  const dispatch = useDispatch();
-  //console.log("isAuth" + isAuth);
-  //console.log(Boolean(user));
-  //console.log(Boolean(secret));
 
   return (
     <div className="app">
@@ -50,9 +46,9 @@ function App() {
                   <EstudiantesNuevos/>
                 ) 
               } />      
-              <Route path="/Logistica" element={
+              <Route path="/Predicciones" element={
                 isAuth && (
-                  <Logistica/>
+                  <Predicciones/>
                 ) 
               } />      
             </Route>

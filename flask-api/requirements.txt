@@ -4,3 +4,4 @@ Flask
 joblib
 Flask-Cors
 scikit-learn
+pyarrow

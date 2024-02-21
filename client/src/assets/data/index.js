@@ -210,3 +210,14 @@ export const gradoData = [
         codigo: "3",
     },
 ];
+
+export const abandonoData = [
+    {
+        nombre: "No abandono",
+        codigo: 0,
+    },
+    {
+        nombre: "Riesgo de Abanono",
+        codigo: 1,
+    },
+];
