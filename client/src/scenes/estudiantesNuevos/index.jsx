@@ -37,80 +37,6 @@ import {
   isecData,
 } from "../../assets/data/index.js";
 
-const columns = [
-  {
-    field: "_id",
-    headerName: "ID",
-    //flex: 1,
-  },
-  {
-    field: "nombre",
-    headerName: "Nombre",
-    //flex: 1,
-    //editable: true,
-  },
-  {
-    field: "apellido",
-    headerName: "Apellido",
-    //flex: 1,
-  },
-  {
-    field: "cedula",
-    headerName: "Cedula",
-    //flex: 1,
-  },
-  {
-    field: "sexo",
-    headerName: "Sexo",
-    //flex: 1,
-  },
-  {
-    field: "edad",
-    headerName: "Edad",
-    //flex: 1,
-  },
-  {
-    field: "provincia",
-    headerName: "Provincia",
-    //flex: 1,
-  },
-  {
-    field: "distrito",
-    headerName: "Distrito",
-    //flex: 1,
-  },
-  {
-    field: "etnia",
-    headerName: "Etnia",
-    //flex: 1,
-  },
-  {
-    field: "area",
-    headerName: "Area",
-    //flex: 1,
-  },
-  {
-    field: "regionNatural",
-    headerName: "Region",
-    //flex: 1,
-  },
-  {
-    field: "regimenEscolar",
-    headerName: "Regimen",
-    //flex: 1,
-  },
-  {
-    field: "quintil",
-    headerName: "Quintil",
-    //flex: 1,
-  },
-  {
-    field: "isec",
-    headerName: "Isec",
-    //flex: 1,
-  },
-];
-
 const EstudiantesNuevos = () => {
   /////////////////////////////////////////////////////////////////////////////////////////////
   /* Constantes basicas */
@@ -209,17 +135,30 @@ const EstudiantesNuevos = () => {
 
   const handleChangeInstitucion = (event, newInstitucion) => {
     setInstitucion(newInstitucion);
-    const codigodesp = newInstitucion.split("-")[1];   
-    const institucionEncontrada = institucionjson.find((institucion) => {
-      return institucion.AMIE === codigodesp;
-    });
-    
-    setZona(institucionEncontrada.Zona);
-    setRegimenEscolar(institucionEncontrada.Regimen_Escolar);
-    setSostenimiento(institucionEncontrada.Sostenimiento);
-    setUmbralGeo(institucionEncontrada.Categoria_Umbral);
-    setCatGeo(institucionEncontrada?.["Umbral_Por_Institucion"]);
-  };
+
+    // Verificar si newInstitucion no es null y contiene "-"
+    if (newInstitucion && newInstitucion.includes("-")) {
+        const codigodesp = newInstitucion.split("-")[1];   
+        const institucionEncontrada = institucionjson.find((institucion) => {
+            return institucion.AMIE === codigodesp;
+        });
+        //console.log(codigodesp);
+        setZona(institucionEncontrada.Zona);
+        setRegimenEscolar(institucionEncontrada.Regimen_Escolar);
+        setSostenimiento(institucionEncontrada.Sostenimiento);
+        setUmbralGeo(institucionEncontrada.Categoria_Umbral);
+        setCatGeo(institucionEncontrada?.["Umbral_Por_Institucion"]);
+        setAmie(codigodesp);
+    } else {
+        // Si newInstitucion es null o no contiene "-", resetear los valores
+        setZona('');
+        setRegimenEscolar('');
+        setSostenimiento('');
+        setUmbralGeo('');
+        setCatGeo('');
+        setAmie('');
+    }
+};
 
   const handleChangeProvincia = (event, newValue) => {
     setProvincia(newValue);
@@ -280,6 +219,10 @@ const EstudiantesNuevos = () => {
     setAbandono(event.target.value);
   };
 
+  const handleAmie = (event) => {
+    setAmie(event.target.value)
+  }
+
   /////////////////////////////////////////////////////////////////////////////////////////////
   /* handleSubmit */
 
@@ -306,8 +249,9 @@ const EstudiantesNuevos = () => {
         (sostenimientos) => sostenimientos.nombre === sostenimiento
       )?.codigo || null;
     const codigoZona =
-      zonajson.find((zonas) => zonas.nombre === zona)?.codigo || null;
+      zonajson.find((zonas) => zonas.nombre === zona)?.codigo || null;    
     
+    //console.log(amie)
     const nuevoEstudiante = {
       nombre: nombre,
       apellido: apellido,
@@ -329,9 +273,10 @@ const EstudiantesNuevos = () => {
       catGeo: umbralGeo,
       umbralGeo: catGeo,
       abandono: abandono,
+      amie: amie,
     };
-    
-    postEstudiante(nuevoEstudiante);
+    //console.log(nuevoEstudiante)
+    //postEstudiante(nuevoEstudiante);
     setNombre("");
     setApellido("");
     setCedula("");
@@ -351,7 +296,8 @@ const EstudiantesNuevos = () => {
     setUmbralGeo("");
     setAbandono("");
     setGrado("");
-    setInstitucion( provinciajson[0]?.["Nombre de Provincia"] || null);
+    setInstitucion("");
+    setAmie("");
   };
 
   /////////////////////////////////////////////////////////////////////////////////////////////
@@ -454,10 +400,12 @@ const EstudiantesNuevos = () => {
                 onInputChange={(event, newInputValue) => {
                   setInputSexo(newInputValue);
                 }}
-                id="manageable-states-demo"
+                id="manageable-states-demo" 
+                
                 options={sexojson.map((option) => {
                   return option.nombre;
                 })}
+                freeSolo
                 //sx={{ width: 300 }}
                 renderInput={(params) => <TextField {...params} label="Sexo" />}
               />
@@ -470,11 +418,12 @@ const EstudiantesNuevos = () => {
                 onInputChange={(event, newInputValue) => {
                   setInputEtnia(newInputValue);
                 }}
-                id="manageable-states-demo"
+                id="manageable-states-demo" 
                 options={etniajson.map((option) => {
                   return option.nombre;
                 })}
                 //sx={{ width: 300 }}
+                freeSolo
                 renderInput={(params) => (
                   <TextField {...params} label="Etnia" />
                 )}
@@ -488,10 +437,11 @@ const EstudiantesNuevos = () => {
                 onInputChange={(event, newInputValue) => {
                   setInputRegionNatural(newInputValue);
                 }}
-                id="manageable-states-demo"
+                id="manageable-states-demo"                 
                 options={regionjson.map((option) => {
                   return option.nombre;
-                })}
+                })}          
+                freeSolo      
                 renderInput={(params) => (
                   <TextField {...params} label="Región Natural" />
                 )}
@@ -505,7 +455,8 @@ const EstudiantesNuevos = () => {
                 onInputChange={(event, newInputValue) => {
                   setInputArea(newInputValue);
                 }}
-                id="manageable-states-demo"
+                id="manageable-states-demo" 
+                freeSolo
                 options={areajson.map((option) => {
                   return option.nombre;
                 })}
@@ -521,7 +472,8 @@ const EstudiantesNuevos = () => {
                 onInputChange={(event, newInputValue) => {
                   setInputQuintil(newInputValue);
                 }}
-                id="manageable-states-demo"
+                id="manageable-states-demo" 
+                freeSolo
                 options={quintiljson.map((option) => {
                   return option.nombre;
                 })}
@@ -558,7 +510,8 @@ const EstudiantesNuevos = () => {
                 onInputChange={(event, newInputValue) => {
                   setInputProvincia(newInputValue);
                 }}
-                id="manageable-states-demo"
+                id="manageable-states-demo" 
+                freeSolo
                 options={provinciajson.map((option) => {
                   return option["Nombre de Provincia"];
                 })}
@@ -577,7 +530,8 @@ const EstudiantesNuevos = () => {
                 onInputChange={(event, newInputValue) => {
                   setInputInstitucion(newInputValue);
                 }}
-                id="manageable-states-demo"
+                id="manageable-states-demo" 
+                freeSolo
                 options={institucionFiltrada.map((option) => {
                   return `${option["Nombre_Institucion"]}-${option["AMIE"]}`;
                 })}       
@@ -595,7 +549,8 @@ const EstudiantesNuevos = () => {
                 onInputChange={(event, newInputValue) => {
                   setInputGrado(newInputValue);
                 }}
-                id="manageable-states-demo"
+                id="manageable-states-demo" 
+                freeSolo
                 options={gradojson.map((option) => {
                   return option.nombre;
                 })}
@@ -622,7 +577,7 @@ const EstudiantesNuevos = () => {
                 onInputChange={(event, newInputValue) => {
                   setInputZona(newInputValue);
                 }}
-                id="manageable-states-demo"
+                id="manageable-states-demo" freeSolo
                 options={zonajson.map((option) => {
                   return option.nombre;
                 })}
@@ -638,7 +593,7 @@ const EstudiantesNuevos = () => {
                 onInputChange={(event, newInputValue) => {
                   setInputDistrito(newInputValue);
                 }}
-                id="manageable-states-demo"
+                id="manageable-states-demo" freeSolo
                 options={distritojson.map((option) => {
                   return option["Nombre del Distrito"];
                 })}
@@ -665,7 +620,7 @@ const EstudiantesNuevos = () => {
                 onInputChange={(event, newInputValue) => {
                   setInputRegimenEscolar(newInputValue);
                 }}
-                id="manageable-states-demo"
+                id="manageable-states-demo" freeSolo
                 options={regimenjson.map((option) => {
                   return option.nombre;
                 })}

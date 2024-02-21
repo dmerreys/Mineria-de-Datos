@@ -18,6 +18,10 @@ export const api = createApi({
       query: () => `student/estudiantes`, //rutas del index.js de el server y de la ruta enstudent.js en controllers
       providesTags: ["Student"],
     }),
+    getHistoricos: build.query({
+      query: () => `historicos/historicos`,
+      providesTags: ["Historicos"],
+    }),
     getDashboard: build.query({
       query: () => "general/dashboard",
       providesTags: ["Dashboard"],
@@ -55,6 +59,7 @@ export const {
   //useGetSalesQuery,
   useGetAdminsQuery,
   useGetUserPerformanceQuery,
+  useGetHistoricosQuery,
   usePostEstudianteMutation,
   useGetStudentQuery,
   useGetDashboardQuery,
