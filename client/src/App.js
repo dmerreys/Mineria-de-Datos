@@ -8,9 +8,9 @@ import { useState } from "react";
 import Layout from "scenes/layout";
 import Dashboard from "scenes/dashboard";
 import EstudiantesNuevos from "scenes/estudiantesNuevos";
-//import Login from "scenes/login";
-import Logistica from "scenes/predicciones";
-import LoginPage from "scenes/login";
+import Login from "scenes/login";
+import Predicciones from "scenes/predicciones";
+
 
 function App() {
   const mode = useSelector((state) => state.global.mode);

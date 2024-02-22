@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import Header from "components/Header";
 import { useDispatch } from "react-redux";
-import { usePostEstudianteMutation } from "state/api";
+import { usePostEstudianteMutation, usePostEstudiantesMutation } from "state/api";
 import { setUserGlobal } from "state/index";
 import FlexBetween from "components/FlexBetween";
 import { useGetStudentQuery } from "state/api";
@@ -36,12 +36,14 @@ import {
   gradoData,
   isecData,
 } from "../../assets/data/index.js";
+import ReactFileReader from "react-file-reader";
 
 const EstudiantesNuevos = () => {
   /* Constantes basicas */
   const isNonMediumScreens = useMediaQuery("(min-width: 1200px)");
   const theme = useTheme();
   const [postEstudiante] = usePostEstudianteMutation();
+  const [postEstudiantes] = usePostEstudiantesMutation();
   /////////////////////////////////////////////////////////////////////////////////////////////
   /* seteos de datos de estudiantes */
 
@@ -134,27 +136,27 @@ const EstudiantesNuevos = () => {
 
     // Verificar si newInstitucion no es null y contiene "-"
     if (newInstitucion && newInstitucion.includes("-")) {
-        const codigodesp = newInstitucion.split("-")[1];   
-        const institucionEncontrada = institucionjson.find((institucion) => {
-            return institucion.AMIE === codigodesp;
-        });
-        //console.log(codigodesp);
-        setZona(institucionEncontrada.Zona);
-        setRegimenEscolar(institucionEncontrada.Regimen_Escolar);
-        setSostenimiento(institucionEncontrada.Sostenimiento);
-        setUmbralGeo(institucionEncontrada.Categoria_Umbral);
-        setCatGeo(institucionEncontrada?.["Umbral_Por_Institucion"]);
-        setAmie(codigodesp);
+      const codigodesp = newInstitucion.split("-")[1];
+      const institucionEncontrada = institucionjson.find((institucion) => {
+        return institucion.AMIE === codigodesp;
+      });
+      //console.log(codigodesp);
+      setZona(institucionEncontrada.Zona);
+      setRegimenEscolar(institucionEncontrada.Regimen_Escolar);
+      setSostenimiento(institucionEncontrada.Sostenimiento);
+      setUmbralGeo(institucionEncontrada.Categoria_Umbral);
+      setCatGeo(institucionEncontrada?.["Umbral_Por_Institucion"]);
+      setAmie(codigodesp);
     } else {
-        // Si newInstitucion es null o no contiene "-", resetear los valores
-        setZona('');
-        setRegimenEscolar('');
-        setSostenimiento('');
-        setUmbralGeo('');
-        setCatGeo('');
-        setAmie('');
+      // Si newInstitucion es null o no contiene "-", resetear los valores
+      setZona("");
+      setRegimenEscolar("");
+      setSostenimiento("");
+      setUmbralGeo("");
+      setCatGeo("");
+      setAmie("");
     }
-};
+  };
 
   const handleChangeProvincia = (event, newValue) => {
     setProvincia(newValue);
@@ -216,13 +218,13 @@ const EstudiantesNuevos = () => {
   };
 
   const handleAmie = (event) => {
-    setAmie(event.target.value)
-  }
+    setAmie(event.target.value);
+  };
 
   // Get Prediction
-  const getPrediction = async (arr) => {
+  const getPrediction = async (arr, route) => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/predict", {
+      const response = await fetch(`http://127.0.0.1:5000/${route}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -237,6 +239,57 @@ const EstudiantesNuevos = () => {
     } catch (error) {
       console.error("Error al realizar la predicción:", error);
     }
+  };
+
+  const uploadFile = (files) => {
+    // Creating the object of FileReader Class
+    var read = new FileReader();
+    // when readAsText will invoke, onload() method on the read object will execute.
+    read.onload = async function (e) {
+      // perform some operations with read data
+      alert(read.result);
+      const rows = read.result.split("\n").map((row) => row.replace("\r", ""));
+      const csvData = [];
+
+      rows.forEach((row) => {
+        const columns = row.split(",");
+        csvData.push(columns);
+      });
+
+      const res = await getPrediction(csvData.slice(1), "model/predictions");
+
+      const columnNames = csvData[0];
+      const nuevosEstudiantes = [];
+
+      for (let i = 1; i < csvData.length; i++) {
+        const fila = csvData[i];
+        const nuevoEstudiante = {};
+
+        // Itera sobre las columnas y asigna los valores al objeto
+        for (let j = 0; j < columnNames.length; j++) {
+          const columna = columnNames[j];
+          let valor = fila[j];
+
+          // Realiza conversiones según la columna
+          if (columna === "Edad") {
+            valor = parseInt(valor, 10); // Convierte a entero
+          } else if (columna === "isec") {
+            valor = parseFloat(valor); // Convierte a float
+          }
+
+          nuevoEstudiante[columna] = valor;
+        }
+        // Agrega la nueva columna "abandono" y su valor desde res
+        nuevoEstudiante["abandono"] = res[i - 1]; // i - 1 para ajustar al índice de res
+        // Agrega el objeto al arreglo
+        nuevosEstudiantes.push(nuevoEstudiante);
+      }
+
+      postEstudiantes(nuevosEstudiantes);
+
+    };
+    // Invoking the readAsText() method by passing the uploaded file as a parameter
+    read.readAsText(files[0]);
   };
 
   /////////////////////////////////////////////////////////////////////////////////////////////
@@ -291,7 +344,7 @@ const EstudiantesNuevos = () => {
       ],
     ];
 
-    const pred = await getPrediction(arregloPrediccion);
+    const pred = await getPrediction(arregloPrediccion, "model/prediction");
 
     const nuevoEstudiante = {
       nombre: nombre,
@@ -316,7 +369,7 @@ const EstudiantesNuevos = () => {
       abandono: pred,
       amie: amie,
     };
-    
+
     postEstudiante(nuevoEstudiante);
     setNombre("");
     setApellido("");
@@ -385,6 +438,9 @@ const EstudiantesNuevos = () => {
     //Contenedor Principal
     <Box m="1.5rem 2.5rem">
       <Header title="Estudiantes Nuevos" subtitle="Datos Estudiantes" />
+      <ReactFileReader handleFiles={uploadFile} fileTypes={".csv"}>
+        <button className="btn"> Upload </button>
+      </ReactFileReader>
       <Box
         mt="20px"
         display="grid"
@@ -441,8 +497,7 @@ const EstudiantesNuevos = () => {
                 onInputChange={(event, newInputValue) => {
                   setInputSexo(newInputValue);
                 }}
-                id="manageable-states-demo" 
-                
+                id="manageable-states-demo"
                 options={sexojson.map((option) => {
                   return option.nombre;
                 })}
@@ -459,7 +514,7 @@ const EstudiantesNuevos = () => {
                 onInputChange={(event, newInputValue) => {
                   setInputEtnia(newInputValue);
                 }}
-                id="manageable-states-demo" 
+                id="manageable-states-demo"
                 options={etniajson.map((option) => {
                   return option.nombre;
                 })}
@@ -478,11 +533,11 @@ const EstudiantesNuevos = () => {
                 onInputChange={(event, newInputValue) => {
                   setInputRegionNatural(newInputValue);
                 }}
-                id="manageable-states-demo"                 
+                id="manageable-states-demo"
                 options={regionjson.map((option) => {
                   return option.nombre;
-                })}          
-                freeSolo      
+                })}
+                freeSolo
                 renderInput={(params) => (
                   <TextField {...params} label="Región Natural" />
                 )}
@@ -496,7 +551,7 @@ const EstudiantesNuevos = () => {
                 onInputChange={(event, newInputValue) => {
                   setInputArea(newInputValue);
                 }}
-                id="manageable-states-demo" 
+                id="manageable-states-demo"
                 freeSolo
                 options={areajson.map((option) => {
                   return option.nombre;
@@ -513,7 +568,7 @@ const EstudiantesNuevos = () => {
                 onInputChange={(event, newInputValue) => {
                   setInputQuintil(newInputValue);
                 }}
-                id="manageable-states-demo" 
+                id="manageable-states-demo"
                 freeSolo
                 options={quintiljson.map((option) => {
                   return option.nombre;
@@ -551,7 +606,7 @@ const EstudiantesNuevos = () => {
                 onInputChange={(event, newInputValue) => {
                   setInputProvincia(newInputValue);
                 }}
-                id="manageable-states-demo" 
+                id="manageable-states-demo"
                 freeSolo
                 options={provinciajson.map((option) => {
                   return option["Nombre de Provincia"];
@@ -571,7 +626,7 @@ const EstudiantesNuevos = () => {
                 onInputChange={(event, newInputValue) => {
                   setInputInstitucion(newInputValue);
                 }}
-                id="manageable-states-demo" 
+                id="manageable-states-demo"
                 freeSolo
                 options={institucionFiltrada.map((option) => {
                   return `${option["Nombre_Institucion"]}-${option["AMIE"]}`;
@@ -589,7 +644,7 @@ const EstudiantesNuevos = () => {
                 onInputChange={(event, newInputValue) => {
                   setInputGrado(newInputValue);
                 }}
-                id="manageable-states-demo" 
+                id="manageable-states-demo"
                 freeSolo
                 options={gradojson.map((option) => {
                   return option.nombre;

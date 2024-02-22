@@ -34,10 +34,10 @@ import FlexBetween from "./FlexBetween";
 import profileImage from "assets/profile.jpeg";
 
 const navItems = [
-  /* {
-    text: "Dashboard",
-    icon: <HomeOutlined />,
-  },   */
+  {
+    text: "Ingreso",
+    icon: null,
+  },  
   {
     text: "Estudiantes",
     icon: <ShoppingCartOutlined />,
