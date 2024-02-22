@@ -2,11 +2,17 @@ import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema(
   {
-    user: {
+    firstName: {
       type: String,
       required: true,
       min: 2,
-      max: 100,
+      max: 50,
+    },
+    lastName: {
+      type: String,
+      required: true,
+      min: 2,
+      max: 50,
     },
     email: {
       type: String,
@@ -18,27 +24,12 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
       min: 5,
-    },
-    name: {
-        type: String,
-        required: true,
-        min: 2,
-        max: 100,
-      },
-    ocupation: {
-        type: String,
-        required: true,
-        min: 2,
-        max: 100,
-      },
-    role: {
-      type: String,
-      enum: ["user", "admin"],
-      default: "admin",
-    },
+    }, 
+    location: String,
+    occupation: String,  
   },
   { timestamps: true }
 );
 
-const User = mongoose.model("usuarios", UserSchema);
+const User = mongoose.model("User", UserSchema);
 export default User;

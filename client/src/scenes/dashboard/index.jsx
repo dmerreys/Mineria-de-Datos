@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
 import { useGetHistoricosQuery } from "state/api"; // Importa la función para obtener los datos
-import { XYPlot, VerticalBarSeries, XAxis, YAxis, VerticalGridLines, HorizontalGridLines } from 'react-vis';
+
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -21,7 +21,7 @@ const Dashboard = () => {
     fetchData(); // Ejecuta la función para obtener los datos al cargar el componente
   }, []); // El segundo argumento [] asegura que useEffect se ejecute solo una vez al montar el componente
  */
-  return (
+  /* return (
     <Box m="1.5rem 2.5rem">
       <Box
         mt="20px"
@@ -50,7 +50,7 @@ const Dashboard = () => {
         </Box>
       </Box>
     </Box>
-  );
+  ); */
 };
 
 export default Dashboard;

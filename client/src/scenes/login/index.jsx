@@ -1,76 +1,36 @@
-import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { usePostLoginMutation, usePostSignUpMutation } from "state/api";
-import { setUserGlobal } from "state/index";
+import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
+import Form from "./Form";
 
-const Login = ({ setUser, setSecret }) => {
-  const [isRegister, setIsRegister] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [triggerLogin, resultLogin] = usePostLoginMutation();
-  const [triggerSignUp] = usePostSignUpMutation();
-  const dispatch = useDispatch();
-
-  const handleLogin = () => {
-    triggerLogin({ username, password });
-  };
-
-  const handleRegister = () => {
-    triggerSignUp({ username, password });
-  };
-
-  useEffect(() => {
-    //console.log(resultLogin);
-    if (resultLogin.data) {
-      //console.log(resultLogin);
-      dispatch(setUserGlobal(username));
-      setUser(username);
-      setSecret(password);
-    }
-  }, [resultLogin.data]); // eslint-disable-line
-
+const LoginPage = () => {
+  const theme = useTheme();
+  const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   return (
-    <div className="login-page">
-      <div className="login-container">
-        <h2 className="title">MINERIA</h2>
-        <p
-          className="register-change"
-          onClick={() => setIsRegister(!isRegister)}
-        >
-          {isRegister ? "Ya eres Usuario?" : "Registro"}
-        </p>
+    <Box>
+      <Box
+        width="100%"
+        backgroundColor={theme.palette.background.alt}
+        p="1rem 6%"
+        textAlign="center"
+      >
+        <Typography fontWeight="bold" fontSize="32px" color="primary">
+          Minería de Datos
+        </Typography>
+      </Box>
 
-        <div>
-          <input
-            className="login-input"
-            type="text"
-            placeholder="Usuario"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <input
-            className="login-input"
-            type="password"
-            placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-
-        <div className="login-actions">
-          {isRegister ? (
-            <button type="button" onClick={handleRegister}>
-              Register
-            </button>
-          ) : (
-            <button type="button" onClick={handleLogin}>
-              Login
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
+      <Box
+        width={isNonMobileScreens ? "50%" : "93%"}
+        p="2rem"
+        m="2rem auto"
+        borderRadius="1.5rem"
+        backgroundColor={theme.palette.background.alt}
+      >
+        <Typography fontWeight="500" variant="h5" sx={{ mb: "1.5rem" }}>
+          Predicción de estudiantes que posiblemente abandonen sus estudios.
+        </Typography>
+        <Form />
+      </Box>
+    </Box>
   );
 };
 
-export default Login;
+export default LoginPage;
