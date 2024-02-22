@@ -47,6 +47,13 @@ export const api = createApi({
         body: estudianteData,
       }),
     }),
+    postEstudiantes: build.mutation({
+      query: (estudiantesData) => ({
+        url: "student/varios-estudiantes",
+        method: "POST",
+        body: estudiantesData,
+      }),
+    }),
   }),
 });
 
@@ -61,6 +68,7 @@ export const {
   useGetUserPerformanceQuery,
   useGetHistoricosQuery,
   usePostEstudianteMutation,
+  usePostEstudiantesMutation,
   useGetStudentQuery,
   useGetDashboardQuery,
   usePostLoginMutation,

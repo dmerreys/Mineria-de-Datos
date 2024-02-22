@@ -1,8 +1,4 @@
-import {
-  Box,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { Box, useMediaQuery, useTheme } from "@mui/material";
 import Header from "components/Header";
 import { useGetStudentQuery } from "state/api";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
@@ -16,7 +12,7 @@ import {
   regimenData,
   gradoData,
   zonaData,
-  abandonoData
+  abandonoData,
 } from "assets/data";
 import institucionesData from "assets/data/Instituciones.json";
 import provinciasData from "assets/data/Provincias.json";
@@ -31,7 +27,7 @@ const columns = [
     field: "nombre",
     headerName: "Nombre",
     //flex: 1,
-    editable: true,
+    //editable: true,
   },
   {
     field: "apellido",
@@ -76,8 +72,8 @@ const columns = [
     //flex: 1,
     valueGetter: (params) => {
       return (
-        regionData.find((region) => region.codigo === params.value)
-          ?.nombre || params.value
+        regionData.find((region) => region.codigo === params.value)?.nombre ||
+        params.value
       );
     },
   },
@@ -119,8 +115,10 @@ const columns = [
     //flex: 1,
     valueGetter: (params) => {
       return (
-        provinciasData.find((provincia) => provincia["Codigo de Provincia"].toString() === params.value)
-          ?.["Nombre de Provincia"] || params.value
+        provinciasData.find(
+          (provincia) =>
+            provincia["Codigo de Provincia"].toString() === params.value
+        )?.["Nombre de Provincia"] || params.value
       );
     },
   },
@@ -130,8 +128,9 @@ const columns = [
     //flex: 1,
     valueGetter: (params) => {
       return (
-        institucionesData.find((institucion) => institucion.AMIE === params.value)
-          ?.Nombre_Institucion || params.value
+        institucionesData.find(
+          (institucion) => institucion.AMIE === params.value
+        )?.Nombre_Institucion || params.value
       );
     },
   },
@@ -141,8 +140,8 @@ const columns = [
     //flex: 1,
     valueGetter: (params) => {
       return (
-        gradoData.find((grado) => grado.codigo === params.value)
-          ?.nombre || params.value
+        gradoData.find((grado) => grado.codigo === params.value)?.nombre ||
+        params.value
       );
     },
   },
@@ -152,8 +151,8 @@ const columns = [
     //flex: 1,
     valueGetter: (params) => {
       return (
-        zonaData.find((zona) => zona.codigo === params.value)
-          ?.nombre || params.value
+        zonaData.find((zona) => zona.codigo === params.value)?.nombre ||
+        params.value
       );
     },
   },
@@ -174,8 +173,9 @@ const columns = [
     //flex: 1,
     valueGetter: (params) => {
       return (
-        sostenimientoData.find((sostenimiento) => sostenimiento.codigo === params.value)
-          ?.nombre || params.value
+        sostenimientoData.find(
+          (sostenimiento) => sostenimiento.codigo === params.value
+        )?.nombre || params.value
       );
     },
   },
@@ -188,20 +188,23 @@ const columns = [
         abandonoData.find((abandono) => abandono.codigo === params.value)
           ?.nombre || params.value
       );
-    }
+    },
   },
 ];
 
 const Predicciones = () => {
   const isNonMediumScreens = useMediaQuery("(min-width: 1200px)");
   const theme = useTheme();
-  const { data, isLoading } = useGetStudentQuery();
+  const { data, isLoading } = useGetStudentQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+  });
 
   console.log(data);
 
   return (
     <Box m="1.5rem 2.5rem">
-      <Header title="Regresión Logística" subtitle="Listado de Estudiantes" />
+      <Header title="Predicciones" subtitle="Listado de Estudiantes" />
       <Box
         mt="20px"
         display="grid"

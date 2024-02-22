@@ -9,7 +9,7 @@ import Layout from "scenes/layout";
 import Dashboard from "scenes/dashboard";
 import EstudiantesNuevos from "scenes/estudiantesNuevos";
 import Login from "scenes/login";
-import Predicciones from "scenes/logistica";
+import Predicciones from "scenes/predicciones";
 
 
 function App() {

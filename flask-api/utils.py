@@ -11,6 +11,13 @@ def to_df(arr):
 	return pd.DataFrame(arr, columns=columns)
 
 
+def convert_types(df):
+  df['Edad'] = df['Edad'].astype(int)
+  df['isec'] = df['isec'].astype(float)
+  df['Umbral_Geografico'] = df['Umbral_Geografico'].astype(float)
+  return df
+
+
 def drop_columns(df):
 	columns_to_drop = ['AMIE',
 											'Umbral_Geografico', 'Cod_Provincia', 'isec', 'Nombre', 'Apellido',

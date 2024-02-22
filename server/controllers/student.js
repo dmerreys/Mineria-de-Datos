@@ -42,6 +42,21 @@ router.post('/estudiantes', async (req, res) => {
     }
 });
 
+router.post('/varios-estudiantes', async (req, res) => {
+    try {
+        // Obtener el arreglo de estudiantes desde el cuerpo de la solicitud
+        const nuevosEstudiantes = req.body;
+        console.log(nuevosEstudiantes)
+        // Insertar los nuevos estudiantes en la base de datos sin borrar los existentes
+        await Students.insertMany(nuevosEstudiantes);
+
+        res.status(201).json({ message: 'Estudiantes agregados a MongoDB correctamente.' });
+    } catch (error) {
+        console.error('Error al agregar estudiantes a MongoDB:', error);
+        res.status(500).json({ message: 'Error al agregar estudiantes a MongoDB' });
+    }
+  });
+
 // Controlador para actualizar un estudiante
 router.put('/estudiantes/:id', async (req, res) => {
     const { id } = req.params;
