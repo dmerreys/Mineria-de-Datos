@@ -28,41 +28,6 @@ export const dataUser = [
     },
 ];
 
-export const users = [
-    {
-      firstName: "test",
-      lastName: "me",
-      email: "testtest@gmail.com",
-      password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
-      location: "San Fran, CA",
-      occupation: "Software Engineer",
-    },
-    {
-      firstName: "Steve",
-      lastName: "Ralph",
-      email: "thataaa@gmail.com",
-      password: "$!FEAS@!O)_IDJda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
-      location: "New York, CA",
-      occupation: "Degenerate",
-    },
-    {
-      firstName: "Some",
-      lastName: "Guy",
-      email: "someguy@gmail.com",
-      password: "da39a3ee5e6b4b0d3255bfef95601890afd80709",     
-      location: "Canada, CA",
-      occupation: "Data Scientist Hacker",
-    },
-    {
-      firstName: "Whatcha",
-      lastName: "Doing",
-      email: "whatchadoing@gmail.com",
-      password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",      
-      location: "Korea, CA",
-      occupation: "Educator",     
-    },
-];
-
 export const dataStudent = [
     {
         nombre: "Nombre90",

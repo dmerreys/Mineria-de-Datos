@@ -1,57 +1,36 @@
-import bcrypt from "bcrypt";
+import express from "express";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
-/* REGISTER USER */
-export const register = async (req, res) => {
-  try {
-    const {
-      firstName,
-      lastName,
-      email,
-      password,
-      location,
-      occupation,
-    } = req.body;
-    console.log(req.body);
-    const salt = await bcrypt.genSalt();
-    const passwordHash = await bcrypt.hash(password, salt);
-    console.log(salt)
-    const newUser = new User({
-      firstName,
-      lastName,
-      email,
-      password: passwordHash, 
-      location,
-      occupation,      
-    });
-    const savedUser = await newUser.save();
-    res.status(201).json(savedUser);
-  } catch (err) {
-    res.status(500).json({ error: "No se creo el usuario" });
-  }
-};
+const router = express.Router();
 
-/* LOGGING IN */
-export const login = async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email: email });
-    console.log(user)
-    console.log(req.body)
-    if (!user) return res.status(400).json({ msg: "User does not exist. " });
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    console.log("isMatch"+isMatch)
-    console.log(process.env.JWT_SECRET)
-    if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });
-      console.log("user id"+user._id )  
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    const { username, password } = req.body;
+    //console.log(req.body)
+    // Realizar la autenticación (en este caso, simplemente verificar la existencia del usuario)
+    const user = await User.findOne({ user: username });
+    //console.log(user);
     
-    console.log(token)
-    delete user.password;
-    res.status(200).json({ token, user });
-  } catch (err) {
-    res.status(500).json({ error: "Error en el controller login auth" });
+
+    if (!user) {
+      return res.status(401).json({ message: "Usuario no Encontrado" });
+    }
+
+    // Verificar si la contraseña es correcta
+    //if (password !== user.password) {
+      //return res.status(401).json({ message: "Invalid password" });
+    //}
+
+    // Generar un token JWT
+    //const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+
+    // Devolver el token al cliente
+    res.status(200).json({ username , password });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
-};
+});
+
+export default router;
