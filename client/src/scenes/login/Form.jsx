@@ -1,4 +1,4 @@
-import { useState } from "react";
+/* import { useState } from "react";
 import {
   Box,
   Button,
@@ -200,7 +200,7 @@ const Form = () => {
             />
           </Box>
 
-          {/* BUTTONS */}
+          {/* BUTTONS 
           <Box>
             <Button
               fullWidth
@@ -240,4 +240,4 @@ const Form = () => {
   );
 };
 
-export default Form;
+export default Form; */
