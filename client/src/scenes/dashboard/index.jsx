@@ -24,14 +24,16 @@ const Dashboard = () => {
           "&": { gridAutoRows: "auto" },
         }}
       >
-        <iframe
-          title="informe powerBi"
-          width="1140"
-          height="541.25"
-          src="https://app.powerbi.com/reportEmbed?reportId=98762be7-8571-46d5-8caa-3ee7c5229706&autoAuth=true&ctid=8ca52e2b-1d20-4274-9a13-bd76eccb81d1"
-          frameborder="0"
-          allowFullScreen="true"
-        ></iframe>
+        <Box p="1.25rem 1rem">
+          <iframe
+            title="informe powerBi"
+            width="1140"
+            height="541.25"
+            src="https://app.powerbi.com/reportEmbed?reportId=98762be7-8571-46d5-8caa-3ee7c5229706&autoAuth=true&ctid=8ca52e2b-1d20-4274-9a13-bd76eccb81d1"
+            frameborder="0"
+            allowFullScreen="true"
+          ></iframe>
+        </Box>
       </Box>
     </Box>
   );
