@@ -12,6 +12,7 @@ CORS(app, resources={r"/model/*": {"origins": "http://localhost:3001"}})
 def predict():
   try:
     data = request.json.get('data', None)
+    print(data)
 
     if not data:
         return jsonify({'error': 'Falta la información para la predicción'}), 400

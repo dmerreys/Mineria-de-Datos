@@ -247,7 +247,7 @@ const EstudiantesNuevos = () => {
     // when readAsText will invoke, onload() method on the read object will execute.
     read.onload = async function (e) {
       // perform some operations with read data
-      alert(read.result);
+      alert("Datos Cargados con éxito.");
       const rows = read.result.split("\n").map((row) => row.replace("\r", ""));
       const csvData = [];
 
@@ -344,7 +344,7 @@ const EstudiantesNuevos = () => {
       ],
     ];
 
-    const pred = await getPrediction(arregloPrediccion, "model/prediction");
+    const pred = await getPrediction(arregloPrediccion, "model/predict");
 
     const nuevoEstudiante = {
       nombre: nombre,
@@ -742,14 +742,14 @@ const EstudiantesNuevos = () => {
                 fullWidth
               />
             </Grid> */}
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <TextField
                 label="Abandono"
                 value={abandono}
                 onChange={handleChangeAbandono}
                 fullWidth
               />
-            </Grid>
+            </Grid> */}
             <Grid item xs={12}>
               <Button
                 variant="contained"

@@ -35,12 +35,12 @@ function App() {
                 )
               }
             >  
-              <Route path="/" element={isAuth && (<Navigate to="/dashboard" replace />)} />
-              <Route path="/dashboard" element={
+              <Route path="/" element={isAuth && (<Navigate to="/Estudiantes" replace />)} />
+              {/* <Route path="/dashboard" element={
                 isAuth && (
                   <Dashboard/>
                 ) 
-              } />      
+              } />       */}
               <Route path="/Estudiantes" element={
                 isAuth && (
                   <EstudiantesNuevos/>
