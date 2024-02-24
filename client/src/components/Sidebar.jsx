@@ -50,6 +50,10 @@ const navItems = [
     text: "Predicciones",
     icon: <ShoppingCartOutlined />,
   },
+  {
+    text: "Dashboard",
+    icon: <ShoppingCartOutlined />,
+  }
 ];
 
 const Sidebar = ({
