@@ -17,30 +17,41 @@ import {
   ChevronLeft,
   ChevronRightOutlined,
   HomeOutlined,
-  ShoppingCartOutlined,
-  Groups2Outlined,
+  InsightsOutlined,
+  DashboardOutlined,
+  AutoModeOutlined,
   ReceiptLongOutlined,
   PublicOutlined,
   PointOfSaleOutlined,
+  AddReactionOutlined,
   TodayOutlined,
   CalendarMonthOutlined,
   AdminPanelSettingsOutlined,
   TrendingUpOutlined,
   PieChartOutlined,
+  AutoMode,
 } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import FlexBetween from "./FlexBetween";
-import profileImage from "assets/profile.jpeg";
+import profileImage from "assets/logo_load.png";
 
 const navItems = [
+  {
+    text: "Exploratorio",
+    icon: null,
+  },
+  {
+    text: "Dashboard",
+    icon: <InsightsOutlined />,
+  },
   {
     text: "Ingreso",
     icon: null,
   },  
   {
     text: "Estudiantes",
-    icon: <ShoppingCartOutlined />,
+    icon: <AddReactionOutlined />,
   },
   {
     text: "Modelo",
@@ -48,8 +59,9 @@ const navItems = [
   },
   {
     text: "Predicciones",
-    icon: <ShoppingCartOutlined />,
+    icon: <AutoModeOutlined />,
   },
+  
 ];
 
 const Sidebar = ({
@@ -156,7 +168,7 @@ const Sidebar = ({
           <Box position="absolute" bottom="2rem">
             <Divider />
             <FlexBetween textTransform="none" gap="1rem" m="1.5rem 2rem 0 3rem">
-              <Box
+               <Box
                 component="img"
                 alt="profile"
                 src={profileImage}
@@ -164,7 +176,7 @@ const Sidebar = ({
                 width="40px"
                 borderRadius="50%"
                 sx={{ objectFit: "cover" }}
-              />
+              /> 
               <Box textAlign="left">
                 <Typography
                   fontWeight="bold"
@@ -177,15 +189,15 @@ const Sidebar = ({
                   fontSize="0.8rem"
                   sx={{ color: theme.palette.secondary[200] }}
                 >
-                  {user.occupation}
+                  {user.ocupation}
                 </Typography>
               </Box>
-              <SettingsOutlined
+              {/* <SettingsOutlined
                 sx={{
                   color: theme.palette.secondary[300],
                   fontSize: "25px ",
                 }}
-              />
+              /> */}
             </FlexBetween>
           </Box>
         </Drawer>

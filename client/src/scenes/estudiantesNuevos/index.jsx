@@ -15,7 +15,10 @@ import {
 } from "@mui/material";
 import Header from "components/Header";
 import { useDispatch } from "react-redux";
-import { usePostEstudianteMutation, usePostEstudiantesMutation } from "state/api";
+import {
+  usePostEstudianteMutation,
+  usePostEstudiantesMutation,
+} from "state/api";
 import { setUserGlobal } from "state/index";
 import FlexBetween from "components/FlexBetween";
 import { useGetStudentQuery } from "state/api";
@@ -286,7 +289,6 @@ const EstudiantesNuevos = () => {
       }
 
       postEstudiantes(nuevosEstudiantes);
-
     };
     // Invoking the readAsText() method by passing the uploaded file as a parameter
     read.readAsText(files[0]);
@@ -439,7 +441,10 @@ const EstudiantesNuevos = () => {
     <Box m="1.5rem 2.5rem">
       <Header title="Estudiantes Nuevos" subtitle="Datos Estudiantes" />
       <ReactFileReader handleFiles={uploadFile} fileTypes={".csv"}>
-        <button className="btn"> Upload </button>
+        {/*<button className="btn"> Upload </button>*/}
+        <Button className="btn" variant="contained" color="primary" size="medium">
+          Upload
+        </Button>
       </ReactFileReader>
       <Box
         mt="20px"
