@@ -143,7 +143,6 @@ const EstudiantesNuevos = () => {
       const institucionEncontrada = institucionjson.find((institucion) => {
         return institucion.AMIE === codigodesp;
       });
-      //console.log(codigodesp);
       setZona(institucionEncontrada.Zona);
       setRegimenEscolar(institucionEncontrada.Regimen_Escolar);
       setSostenimiento(institucionEncontrada.Sostenimiento);
@@ -238,7 +237,7 @@ const EstudiantesNuevos = () => {
       });
 
       const result = await response.json();
-      return result.res;
+      return result;
     } catch (error) {
       console.error("Error al realizar la predicción:", error);
     }
@@ -250,7 +249,7 @@ const EstudiantesNuevos = () => {
     // when readAsText will invoke, onload() method on the read object will execute.
     read.onload = async function (e) {
       // perform some operations with read data
-      alert("Datos Cargados con éxito.");
+      alert("Datos cargados correctamente.");
       const rows = read.result.split("\n").map((row) => row.replace("\r", ""));
       const csvData = [];
 
@@ -260,6 +259,7 @@ const EstudiantesNuevos = () => {
       });
 
       const res = await getPrediction(csvData.slice(1), "model/predictions");
+      const probsColumn = res.proba.map(arr => arr[1]);
 
       const columnNames = csvData[0];
       const nuevosEstudiantes = [];
@@ -283,11 +283,11 @@ const EstudiantesNuevos = () => {
           nuevoEstudiante[columna] = valor;
         }
         // Agrega la nueva columna "abandono" y su valor desde res
-        nuevoEstudiante["abandono"] = res[i - 1]; // i - 1 para ajustar al índice de res
+        nuevoEstudiante["abandono"] = res.res[i - 1]; // i - 1 para ajustar al índice de res
+        nuevoEstudiante["probabilidad"] = probsColumn[i - 1]; // i - 1 para ajustar al índice de res
         // Agrega el objeto al arreglo
         nuevosEstudiantes.push(nuevoEstudiante);
       }
-
       postEstudiantes(nuevosEstudiantes);
     };
     // Invoking the readAsText() method by passing the uploaded file as a parameter
@@ -368,7 +368,8 @@ const EstudiantesNuevos = () => {
       grado: codigoGrado,
       catGeo: umbralGeo,
       umbralGeo: catGeo,
-      abandono: pred,
+      abandono: pred.res,
+      probabilidad: pred.proba,
       amie: amie,
     };
 

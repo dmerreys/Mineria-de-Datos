@@ -12,7 +12,6 @@ CORS(app, resources={r"/model/*": {"origins": "http://localhost:3001"}})
 def predict():
   try:
     data = request.json.get('data', None)
-    print(data)
 
     if not data:
         return jsonify({'error': 'Falta la información para la predicción'}), 400
@@ -21,10 +20,13 @@ def predict():
     data = drop_columns(data)
     data = get_dummies(data)
     data = completeColumns(data)
+    data['Edad'] = scaler.transform(data[['Edad']])
     prediction = model.predict(data.values)
+    probs = model.predict_proba(data.values)
+    print(probs)
     print(prediction)
 
-    return jsonify({ 'res': prediction[0] }), 200
+    return jsonify({ 'res': prediction[0], "proba": probs[0][1] }), 200
 
   except Exception as e:
     return jsonify({'error': str(e)}), 500
@@ -43,15 +45,19 @@ def predictions():
     data = drop_columns(data)
     data = get_dummies(data)
     data = completeColumns(data)
+    data['Edad'] = scaler.transform(data[['Edad']])
     prediction = model.predict(data.values)
+    probs = model.predict_proba(data.values)
+    print(probs)
     print(prediction)
 
-    return jsonify({ 'res': prediction.tolist() }), 200
+    return jsonify({ 'res': prediction.tolist(), "proba": probs.tolist() }), 200
 
   except Exception as e:
     return jsonify({'error': str(e)}), 500
   
 
 if __name__ == '__main__':
-  model = joblib.load('modelo_Regresion_B.joblib')
+  model = joblib.load('modelo_Regresion_BFin.joblib')
+  scaler = joblib.load('scaler.joblib')
   app.run(debug=True)

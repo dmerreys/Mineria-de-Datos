@@ -20,9 +20,7 @@ const Login = ({ setUser, setSecret }) => {
   };
 
   useEffect(() => {
-    //console.log(resultLogin);
     if (resultLogin.data) {
-      //console.log(resultLogin);
       dispatch(setUserGlobal(username));
       setUser(username);
       setSecret(password);

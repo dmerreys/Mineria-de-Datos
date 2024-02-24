@@ -1,4 +1,5 @@
 import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
 
 
 def to_df(arr):
@@ -39,7 +40,7 @@ def completeColumns(df):
 											'quintil_1', 'quintil_2', 'quintil_3', 'quintil_4', 'quintil_5', 'Area_Rural', 'Area_Urbana',
 											'nm_regi_1', 'nm_regi_2', 'nm_regi_3', 'nm_regi_4', 'nm_regi_90', 'Zona_1', 'Zona_2', 'Zona_3',
 											'Zona_4', 'Zona_5', 'Zona_6', 'Zona_7', 'Zona_8', 'Zona_9', 'Zona_90', 'Categoria_Umbral_Alta',
-											'Categoria_Umbral_Muy Alta', 'Categoria_Umbral_Muy Bajo', 'Categoria_isec_Alto', 'Categoria_isec_Bajo',
+											'Categoria_Umbral_Muy Alta', 'Categoria_Umbral_Muy Baja', 'Categoria_isec_Alto', 'Categoria_isec_Bajo',
 											'Categoria_isec_Medio', 'Categoria_isec_Muy Alto', 'Categoria_isec_Muy Bajo']
 	
 	for columna in columnas_finales:

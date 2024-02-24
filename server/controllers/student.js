@@ -7,7 +7,6 @@ const router = express.Router();
 router.get('/estudiantes', async (req, res) => {
     try {
         const estudiantes = await Students.find();
-        console.log("ESTUDIANTES"+ estudiantes);
         return res.json(estudiantes);       
 
     } catch (error) {
@@ -46,7 +45,6 @@ router.post('/varios-estudiantes', async (req, res) => {
     try {
         // Obtener el arreglo de estudiantes desde el cuerpo de la solicitud
         const nuevosEstudiantes = req.body;
-        console.log(nuevosEstudiantes)
         // Insertar los nuevos estudiantes en la base de datos sin borrar los existentes
         await Students.insertMany(nuevosEstudiantes);
 

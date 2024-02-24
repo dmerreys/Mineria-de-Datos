@@ -36,6 +36,7 @@ const UserSchema = new mongoose.Schema(
     umbralGeo: Number,
     catGeo: String,  
     abandono: Number,
+    probabilidad: Number,
   },
   { timestamps: true }
 );

@@ -7,10 +7,8 @@ const router = express.Router();
 router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
-    //console.log(req.body)
     // Realizar la autenticación (en este caso, simplemente verificar la existencia del usuario)
     const user = await User.findOne({ user: username });
-    //console.log(user);
     
 
     if (!user) {
